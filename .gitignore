@@ -1,0 +1,29 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (if using local server)
+node_modules/
+package-lock.json
+
+# Build output (if any)
+dist/
+build/
+
+# Sensitive files
+.env
+.env.local
+*.key
+*.pem
+
+# Large media files (uncomment if needed)
+# assets/images/*.orig
+# assets/videos/

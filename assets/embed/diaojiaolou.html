@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>秀山吊脚楼 · 结构构造展示</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#1a1d24;font-family:'Microsoft YaHei','PingFang SC',sans-serif;color:#e0dcd4}
+canvas{display:block}
+#loading{position:fixed;inset:0;background:linear-gradient(135deg,#1a1d24,#12141a);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;transition:opacity 1s}
+#loading.hidden{opacity:0;pointer-events:none}
+#loading h1{font-size:2.4rem;font-weight:300;letter-spacing:0.5em;color:#c9a96e;margin-bottom:0.8rem}
+#loading p{font-size:0.85rem;color:#7a7568;letter-spacing:0.3em;margin-bottom:2rem}
+.loader{width:180px;height:2px;background:#2a2820;overflow:hidden;border-radius:1px}
+.loader-bar{height:100%;width:0%;background:linear-gradient(90deg,#c9a96e,#e8d5a8);transition:width 0.3s}
+#header{position:fixed;top:0;left:0;right:0;padding:18px 28px;background:linear-gradient(180deg,rgba(26,29,36,0.9),transparent);z-index:10;pointer-events:none}
+#header h1{font-size:1.2rem;font-weight:300;letter-spacing:0.25em;color:#c9a96e}
+#header .sub{font-size:0.65rem;color:#7a7568;letter-spacing:0.12em;margin-top:3px}
+#controls{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:6px}
+.cb{width:42px;height:42px;border:1px solid rgba(201,169,110,0.2);background:rgba(26,29,36,0.9);color:#c9a96e;border-radius:8px;cursor:pointer;font-size:0.5rem;letter-spacing:0.04em;transition:all 0.3s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px}
+.cb:hover{background:rgba(201,169,110,0.12);border-color:rgba(201,169,110,0.45)}
+.cb.on{background:rgba(201,169,110,0.18);border-color:#c9a96e}
+.cb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5}
+.cb span{font-size:0.48rem;opacity:0.7}
+#info{position:fixed;left:16px;bottom:16px;max-width:360px;background:rgba(22,24,30,0.94);border:1px solid rgba(201,169,110,0.18);border-radius:12px;padding:20px;z-index:10;transform:translateY(120%);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);max-height:55vh;overflow-y:auto}
+#info.show{transform:translateY(0)}
+#info h2{font-size:1rem;font-weight:400;color:#c9a96e;margin-bottom:6px;letter-spacing:0.08em}
+#info .tag{display:inline-block;font-size:0.55rem;color:#7a7568;border:1px solid rgba(201,169,110,0.15);padding:2px 7px;border-radius:3px;margin-bottom:10px}
+#info p{font-size:0.78rem;line-height:1.8;color:#a8a298}
+#info .x{position:absolute;top:10px;right:12px;background:none;border:none;color:#7a7568;cursor:pointer;font-size:1.1rem;padding:4px}
+#legend{position:fixed;right:16px;bottom:16px;background:rgba(22,24,30,0.92);border:1px solid rgba(201,169,110,0.15);border-radius:10px;padding:0;z-index:10;font-size:0.65rem;overflow:hidden;cursor:pointer;max-height:34px;transition:max-height 0.35s ease}
+#legend.open{max-height:260px}
+#legend .lg-head{padding:9px 14px;display:flex;align-items:center;gap:6px;color:#c9a96e;font-size:0.68rem}
+#legend .lg-head .arr{font-size:0.45rem;transition:transform 0.3s;opacity:0.5}
+#legend.open .lg-head .arr{transform:rotate(90deg)}
+#legend .lg-body{padding:0 14px 12px}
+.lg-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;color:#a8a298}
+.lg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+#hint{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);color:#5a5648;font-size:0.65rem;letter-spacing:0.12em;z-index:10;transition:opacity 1s;pointer-events:none}
+#zoom-ctrl{position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:5px}
+.zb{width:44px;height:44px;border:1px solid rgba(201,169,110,0.2);background:rgba(26,29,36,0.92);color:#c9a96e;border-radius:10px;cursor:pointer;font-size:1.3rem;font-weight:300;display:flex;align-items:center;justify-content:center;transition:all 0.25s;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.zb:hover{background:rgba(201,169,110,0.12);border-color:rgba(201,169,110,0.45)}
+.zb:active{background:rgba(201,169,110,0.22);transform:scale(0.93)}
+.zb.fit{font-size:0.52rem;letter-spacing:0.03em;margin-top:4px}
+#zoom-bar{position:fixed;left:16px;top:50%;transform:translateY(-50%) translateY(82px);z-index:9;width:44px;height:4px;background:rgba(201,169,110,0.1);border-radius:2px;pointer-events:none}
+#zoom-fill{height:100%;background:rgba(201,169,110,0.4);border-radius:2px;transition:width 0.2s;width:30%}
+#error-overlay{display:none;position:fixed;inset:0;background:rgba(22,24,30,0.96);z-index:2000;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
+#error-overlay h2{color:#cc4444;font-size:1.3rem;margin-bottom:14px}
+#error-overlay p{color:#a8a298;font-size:0.85rem;line-height:1.7;max-width:480px}
+</style>
+</head>
+<body>
+<div id="loading"><h1>秀山吊脚楼</h1><p>结构构造 · 互动展示</p><div class="loader"><div class="loader-bar" id="lb"></div></div></div>
+<div id="header"><h1>秀山吊脚楼 · 结构构造展示</h1><div class="sub">穿斗式木构架 · 半干栏式建筑 · 重庆市秀山土家族苗族自治县</div></div>
+<div id="controls">
+<button class="cb" onclick="camTo('front')" title="正面"><svg viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="1"/></svg><span>正面</span></button>
+<button class="cb" onclick="camTo('side')" title="侧面"><svg viewBox="0 0 24 24"><polygon points="4,20 4,8 12,4 20,8 20,20"/></svg><span>侧面</span></button>
+<button class="cb" onclick="camTo('top')" title="俯视"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg><span>俯视</span></button>
+<button class="cb" onclick="camTo('frame')" title="构架"><svg viewBox="0 0 24 24"><line x1="4" y1="20" x2="4" y2="4"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="20" y1="20" x2="20" y2="4"/><line x1="4" y1="12" x2="20" y2="12"/></svg><span>构架</span></button>
+<button class="cb" onclick="camTo('detail')" title="细部"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="15"/></svg><span>细部</span></button>
+<button class="cb" id="bWire" onclick="toggleWire()" title="线框"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg><span>线框</span></button>
+<button class="cb" id="bLabel" onclick="toggleLabels()" title="标注"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg><span>标注</span></button>
+<button class="cb" onclick="resetCam()" title="重置"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 3 6.7"/><polyline points="3 18 3 12 9 12"/></svg><span>重置</span></button>
+</div>
+<div id="info"><button class="x" onclick="hideInfo()">&times;</button><h2 id="iT"></h2><div class="tag" id="iTag"></div><p id="iTxt"></p></div>
+<div id="zoom-ctrl">
+<button class="zb" ontouchstart="event.preventDefault();zoomStep(1)" onmousedown="event.preventDefault();zoomStep(1)" title="放大">+</button>
+<button class="zb" ontouchstart="event.preventDefault();zoomStep(-1)" onmousedown="event.preventDefault();zoomStep(-1)" title="缩小">&minus;</button>
+<button class="zb fit" onclick="fitView()" title="适配视图">全览</button>
+</div>
+<div id="zoom-bar"><div id="zoom-fill"></div></div>
+<div id="legend" onclick="this.classList.toggle('open')">
+<div class="lg-head"><span class="arr">▶</span>构件图例</div>
+<div class="lg-body">
+<div class="lg-item"><div class="lg-dot" style="background:#b8884a"></div>立柱（杉木主柱）</div>
+<div class="lg-item"><div class="lg-dot" style="background:#7a5530"></div>横梁（穿枋/地袱）</div>
+<div class="lg-item"><div class="lg-dot" style="background:#d4a050"></div>穿斗斜撑</div>
+<div class="lg-item"><div class="lg-dot" style="background:#c89858"></div>瓜柱（短柱）</div>
+<div class="lg-item"><div class="lg-dot" style="background:#8a8278"></div>石柱础</div>
+<div class="lg-item"><div class="lg-dot" style="background:#5a5e65"></div>屋面小青瓦</div>
+</div>
+</div>
+<div id="hint">拖拽旋转 · 左侧按钮缩放 · 点击标注查看构造说明</div>
+<div id="error-overlay"><h2>加载失败</h2><p id="error-msg"></p></div>
+
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script>if(typeof THREE==='undefined'){document.write('<scr'+'ipt src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/scr'+'ipt>');}</script>
+<script>if(typeof THREE==='undefined'){document.write('<scr'+'ipt src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/scr'+'ipt>');}</script>
+<script>
+if(typeof THREE==='undefined'){
+  document.getElementById('loading').classList.add('hidden');
+  var eo=document.getElementById('error-overlay');eo.style.display='flex';
+  document.getElementById('error-msg').textContent='Three.js 未能加载，请检查网络后刷新。';
+}else{
+
+// ============================================================
+//  Inline OrbitControls
+// ============================================================
+THREE.OrbitControls=function(o,d){this.object=o;this.domElement=d||document;this.enabled=!0;this.target=new THREE.Vector3;this.minDistance=3;this.maxDistance=60;this.minPolarAngle=0.05;this.maxPolarAngle=Math.PI*0.49;this.enableDamping=!0;this.dampingFactor=0.07;this.enableZoom=!0;this.zoomSpeed=1.0;this.enableRotate=!0;this.rotateSpeed=0.5;this.enablePan=!0;this.panSpeed=0.6;this.autoRotate=!1;this.autoRotateSpeed=0.5;var s={NONE:-1,ROTATE:0,DOLLY:1,PAN:2},c=s.NONE,h=new THREE.Spherical,dh=new THREE.Spherical,p=1,m=new THREE.Vector3,vA=new THREE.Vector2,vB=new THREE.Vector2,vC=new THREE.Vector2,vD=new THREE.Vector2,vE=new THREE.Vector2,vF=new THREE.Vector2,vG=new THREE.Vector2,vH=new THREE.Vector2,vI=new THREE.Vector2;this.update=function(){var e=new THREE.Vector3,t=(new THREE.Quaternion).setFromUnitVectors(o.up,new THREE.Vector3(0,1,0)),n=t.clone().invert();return function(){e.copy(o.position).sub(this.target);e.applyQuaternion(t);h.setFromVector3(e);if(this.autoRotate&&c===s.NONE)dh.theta-=2*Math.PI/60/60*this.autoRotateSpeed;h.theta+=dh.theta*this.dampingFactor;h.phi+=dh.phi*this.dampingFactor;h.phi=Math.max(this.minPolarAngle,Math.min(this.maxPolarAngle,h.phi));h.makeSafe();h.radius*=p;h.radius=Math.max(this.minDistance,Math.min(this.maxDistance,h.radius));this.target.add(m.multiplyScalar(this.dampingFactor));e.setFromSpherical(h);e.applyQuaternion(n);o.position.copy(this.target).add(e);o.lookAt(this.target);dh.theta*=1-this.dampingFactor;dh.phi*=1-this.dampingFactor;m.multiplyScalar(1-this.dampingFactor);return!1}}();this.dispose=function(){this.domElement.removeEventListener("contextmenu",O);this.domElement.removeEventListener("mousedown",T);this.domElement.removeEventListener("wheel",R);this.domElement.removeEventListener("touchstart",P);this.domElement.removeEventListener("touchend",k);this.domElement.removeEventListener("touchmove",D);document.removeEventListener("mousemove",C);document.removeEventListener("mouseup",A)};var T=function(e){if(!this.enabled)return;e.preventDefault();if(e.button===0){c=s.ROTATE;vA.set(e.clientX,e.clientY)}else if(e.button===2){c=s.PAN;vD.set(e.clientX,e.clientY)}document.addEventListener("mousemove",C,!1);document.addEventListener("mouseup",A,!1)}.bind(this);var C=function(e){if(!this.enabled)return;if(c===s.ROTATE){vB.set(e.clientX,e.clientY);vC.subVectors(vB,vA).multiplyScalar(this.rotateSpeed);dh.theta-=2*Math.PI*vC.x/this.domElement.clientHeight;dh.phi-=2*Math.PI*vC.y/this.domElement.clientHeight;vA.copy(vB)}else if(c===s.PAN){vE.set(e.clientX,e.clientY);vF.subVectors(vE,vD).multiplyScalar(this.panSpeed);var t=new THREE.Vector3,r=this.object.position.clone().sub(this.target).length();r*=Math.tan(this.object.fov/2*Math.PI/180);t.setFromMatrixColumn(this.object.matrix,0);t.multiplyScalar(-2*vF.x*r/this.domElement.clientHeight);var a=new THREE.Vector3;a.setFromMatrixColumn(this.object.matrix,1);a.multiplyScalar(2*vF.y*r/this.domElement.clientHeight);m.add(t).add(a);vD.copy(vE)}}.bind(this);var A=function(){c=s.NONE;document.removeEventListener("mousemove",C);document.removeEventListener("mouseup",A)}.bind(this);var R=function(e){if(!this.enabled)return;e.preventDefault();if(e.deltaY<0)p/=Math.pow(0.93,this.zoomSpeed);else p*=Math.pow(0.93,this.zoomSpeed);updateZoomBar()}.bind(this);var P=function(e){if(!this.enabled)return;switch(e.touches.length){case 1:c=s.ROTATE;vA.set(e.touches[0].pageX,e.touches[0].pageY);break;case 2:c=s.DOLLY;var t=e.touches[0].pageX-e.touches[1].pageX,a=e.touches[0].pageY-e.touches[1].pageY;vG.set(0,Math.sqrt(t*t+a*a))}}.bind(this);var D=function(e){if(!this.enabled)return;e.preventDefault();if(c===s.ROTATE&&e.touches.length===1){vB.set(e.touches[0].pageX,e.touches[0].pageY);vC.subVectors(vB,vA).multiplyScalar(this.rotateSpeed);dh.theta-=2*Math.PI*vC.x/this.domElement.clientHeight;dh.phi-=2*Math.PI*vC.y/this.domElement.clientHeight;vA.copy(vB)}else if(c===s.DOLLY&&e.touches.length===2){var t=e.touches[0].pageX-e.touches[1].pageX,a=e.touches[0].pageY-e.touches[1].pageY;vH.set(0,Math.sqrt(t*t+a*a));vI.subVectors(vH,vG);if(vI.y>0)p/=Math.pow(0.94,this.zoomSpeed);else if(vI.y<0)p*=Math.pow(0.94,this.zoomSpeed);vG.copy(vH);updateZoomBar()}}.bind(this);var k=function(){c=s.NONE}.bind(this);var O=function(e){e.preventDefault()};this.domElement.addEventListener("contextmenu",O,!1);this.domElement.addEventListener("mousedown",T,!1);this.domElement.addEventListener("wheel",R,{passive:!1});this.domElement.addEventListener("touchstart",P,{passive:!1});this.domElement.addEventListener("touchend",k,!1);this.domElement.addEventListener("touchmove",D,{passive:!1});this.update()};
+
+// ============================================================
+//  DATA
+// ============================================================
+const INFO = {
+  col: { t:'杉木立柱', tag:'竖向构件', txt:'主体全部用杉木建造，柱径约20-30cm。杉木纹理直、耐腐蚀、质轻而坚韧，是武陵山区吊脚楼的首选材料。柱下垫石柱础（磉礅），隔绝地面潮气，防止木柱腐朽。秀山传统布局"横排四扇三间"，即面阔三间用四排柱扇。' },
+  beam: { t:'穿枋 · 地袱 · 横梁', tag:'水平构件', txt:'水平构件包括：地袱（地面横向连接柱脚的梁）、穿枋（穿过柱身的横向/纵向连接梁）、楼板梁（承托楼板的纵向大梁）。所有梁与柱通过榫卯咬合，"不用一钉一铆"即可达到"墙倒屋不塌"的抗震效果。' },
+  brace: { t:'穿斗斜撑', tag:'斜向构件', txt:'穿斗式构架的核心特征——斜向穿枋从一根柱子斜穿至另一根柱子，形成三角形稳定结构。这些斜撑既是结构构件（传递荷载、增强侧向刚度），也是装饰构件，木材斜穿直套形成优美的几何图案。' },
+  guazhu: { t:'瓜柱（童柱/短柱）', tag:'竖向构件', txt:'瓜柱是立于横梁之上的短柱，用于支撑上层梁架。在穿斗式构架中，瓜柱与穿枋配合，逐层抬高屋面，形成阶梯式的屋面坡度。瓜柱底部嵌入梁身的卯口中，顶部承接上层檩条。' },
+  purlin: { t:'檩条（桁条）', tag:'屋面构件', txt:'檩条是沿建筑纵向（面阔方向）搭在柱顶或瓜柱顶上的水平圆木，是屋面的承重骨架。小青瓦直接铺设在檩条上方的椽子上。檩条的数量和间距决定屋面的坡度和弧度。' },
+  roof: { t:'歇山顶 · 翘檐', tag:'屋顶形制', txt:'吊脚楼多采用穿斗式歇山顶，由一条正脊、四条垂脊和四条戗脊组成。屋面覆盖小青瓦，檐口上翘形成"向天飞檐"——既利于排水采光，又使建筑轻盈灵动。屋脊两端常装饰鸱吻（龙吻），寓意镇火辟灾。' },
+  stilt: { t:'吊脚 · 半干栏式', tag:'结构形式', txt:'吊脚楼属半干栏式建筑：正屋建在实地上，厢房（或前廊）悬空，靠长柱支撑至坡面下方。底层架空高2-3米，用于圈养牲畜或堆放农具。这种"吊脚"形式是适应武陵山区崎岖地形的建筑智慧，既节约耕地又防潮通风。' },
+  joint: { t:'榫卯连接', tag:'节点构造', txt:'所有木构件之间通过凿眼（卯口）和榫头精密咬合连接。常见形式有：燕尾榫（用于梁柱连接）、直榫（用于穿枋穿柱）、半榫（用于板壁拼接）。榫卯节点允许一定弹性变形，赋予建筑优异的抗震性能。' },
+  corridor: { t:'走栏 · 美人靠', tag:'空间构件', txt:'二层外连走廊，设半人高栏杆。最具特色的是"美人靠"——弧形靠背栏杆椅，由弯曲的靠背木和座板组成，供人倚坐观景。走廊是室内与山水自然的过渡空间，也是日常劳作、晾晒、社交的重要场所。' },
+  floor: { t:'楼板 · 堂屋 · 火塘', tag:'空间布局', txt:'二层为核心生活层：中间为堂屋（祭祀、待客），设火塘（取暖、炊事）；左右称"饶间"，前为火炕后为卧房。楼板用杉木板密铺在楼板梁上，厚约5-8cm。空间布局体现了土家族"以火塘为中心"的家庭生活方式。' }
+};
+
+// ============================================================
+//  GLOBALS
+// ============================================================
+let scene, camera, renderer, controls;
+let hotspots=[], labelsOn=true, wireOn=false, allMeshes=[];
+const raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2();
+let aTime=0;
+const F2Y=3.2; // shared reference for hotspot positioning
+
+function prog(p){document.getElementById('lb').style.width=p+'%'}
+
+// ============================================================
+//  MATERIALS (color-coded by structural role)
+// ============================================================
+let matCol, matBeam, matBrace, matGua, matStone, matRoof, matFloor, matWall, matRafter, matJoint;
+
+function makeMats(){
+  matCol = new THREE.MeshStandardMaterial({color:0xb8884a, roughness:0.65, metalness:0.02});
+  matBeam = new THREE.MeshStandardMaterial({color:0x7a5530, roughness:0.6, metalness:0.02});
+  matBrace = new THREE.MeshStandardMaterial({color:0xd4a050, roughness:0.55, metalness:0.03});
+  matGua = new THREE.MeshStandardMaterial({color:0xc89858, roughness:0.6, metalness:0.02});
+  matStone = new THREE.MeshStandardMaterial({color:0x8a8278, roughness:0.85, metalness:0.02});
+  matRoof = new THREE.MeshStandardMaterial({color:0x5a5e65, roughness:0.6, metalness:0.05, side:THREE.DoubleSide});
+  matFloor = new THREE.MeshStandardMaterial({color:0x9a7848, roughness:0.7, metalness:0.01});
+  matWall = new THREE.MeshStandardMaterial({color:0xa08050, roughness:0.7, metalness:0.01, transparent:true, opacity:0.3});
+  matRafter = new THREE.MeshStandardMaterial({color:0x8a6838, roughness:0.65, metalness:0.02});
+  matJoint = new THREE.MeshStandardMaterial({color:0xe8c870, roughness:0.3, metalness:0.1, emissive:0x3a2800, emissiveIntensity:0.15});
+}
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function mkCol(h, r){
+  const g=new THREE.Group();
+  const col=new THREE.Mesh(new THREE.CylinderGeometry(r*0.92,r,h,10),matCol);
+  col.position.y=h/2; col.castShadow=true; col.receiveShadow=true;
+  g.add(col); allMeshes.push(col);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(r*1.6,r*2.0,0.18,10),matStone);
+  base.position.y=0.09; base.castShadow=true;
+  g.add(base); allMeshes.push(base);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(r*1.1,0.018,6,12),matJoint);
+  ring.position.y=h; ring.rotation.x=Math.PI/2;
+  g.add(ring);
+  return g;
+}
+function mkBeam(a,b,r,mat){
+  const dir=new THREE.Vector3().subVectors(b,a), len=dir.length();
+  const g=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,6),mat||matBeam);
+  g.position.copy(a).add(b).multiplyScalar(0.5);
+  g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.clone().normalize());
+  g.castShadow=true; allMeshes.push(g);
+  return g;
+}
+function mkRing(pos,r){
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(r*1.15,0.016,6,10),matJoint);
+  ring.position.copy(pos); ring.rotation.x=Math.PI/2;
+  return ring;
+}
+
+// ============================================================
+//  BUILD STRUCTURE
+// ============================================================
+function buildStructure(){
+  const B=new THREE.Group();
+  const bayW=2.8, bays=5, totalW=bayW*bays;
+  const depth=7, corrD=1.4;
+  const f1H=2.8, f2H=2.4, colR=0.12;
+  const cX=[]; for(let i=0;i<=bays;i++) cX.push(-totalW/2+i*bayW);
+  const zB=-depth/2, zM=0, zF=depth/2, zC=zF+corrD;
+  const yB=0.8, yM=0.4, yF=0;
+  const f2Y=yB+f2H, f1Y=f2Y-f1H, roofY=f2Y+f2H;
+  const hB=f2Y-yB, hM=f2Y-yM, hF=f2Y-yF;
+  const ridgeY=roofY+2.2;
+
+  // ── COLUMNS ──
+  const colG=new THREE.Group(); colG.userData={hs:'col'};
+  cX.forEach(x=>{const c=mkCol(hB,colR);c.position.set(x,yB,zB);colG.add(c)});
+  cX.forEach(x=>{const c=mkCol(hM,colR);c.position.set(x,yM,zM);colG.add(c)});
+  cX.forEach(x=>{const c=mkCol(hF,colR);c.position.set(x,yF,zF);colG.add(c)});
+  for(let i=1;i<cX.length;i++){const c=mkCol(f2Y-yF,colR*0.85);c.position.set(cX[i]-bayW/2,yF,zC);colG.add(c)}
+  B.add(colG);
+
+  // ── BEAMS (穿枋 + 地袱) ──
+  const bmG=new THREE.Group(); bmG.userData={hs:'beam'};
+  // Floor 2 cross beams
+  cX.forEach(x=>bmG.add(mkBeam(new THREE.Vector3(x,f2Y,zB),new THREE.Vector3(x,f2Y,zF),0.09)));
+  // Floor 2 longitudinal
+  [zB,zM,zF].forEach(z=>bmG.add(mkBeam(new THREE.Vector3(cX[0],f2Y,z),new THREE.Vector3(cX[cX.length-1],f2Y,z),0.09)));
+  // Roof base cross
+  cX.forEach(x=>bmG.add(mkBeam(new THREE.Vector3(x,roofY,zB),new THREE.Vector3(x,roofY,zF),0.07)));
+  // Roof base longitudinal
+  [zB,zM,zF].forEach(z=>bmG.add(mkBeam(new THREE.Vector3(cX[0],roofY,z),new THREE.Vector3(cX[cX.length-1],roofY,z),0.07)));
+  // Mid tie beams
+  const midY=(f2Y+roofY)/2;
+  [zB,zM,zF].forEach(z=>bmG.add(mkBeam(new THREE.Vector3(cX[0],midY,z),new THREE.Vector3(cX[cX.length-1],midY,z),0.05)));
+  // Corridor beam
+  bmG.add(mkBeam(new THREE.Vector3(cX[1],f2Y,zC),new THREE.Vector3(cX[cX.length-2],f2Y,zC),0.07));
+  // Corridor tie beams (挑枋): front columns → corridor columns
+  for(let i=1;i<cX.length;i++){
+    const cx=cX[i]-bayW/2;
+    bmG.add(mkBeam(new THREE.Vector3(cx,f2Y,zF),new THREE.Vector3(cx,f2Y,zC),0.055));
+  }
+  // Ground tie beams (地袱)
+  cX.forEach(x=>{
+    bmG.add(mkBeam(new THREE.Vector3(x,yB+0.15,zB),new THREE.Vector3(x,yM+0.15,zM),0.055));
+    bmG.add(mkBeam(new THREE.Vector3(x,yM+0.15,zM),new THREE.Vector3(x,yF+0.15,zF),0.055));
+  });
+  [zB,zM,zF].forEach(z=>{
+    const yy=z===zB?yB:z===zM?yM:yF;
+    bmG.add(mkBeam(new THREE.Vector3(cX[0],yy+0.15,z),new THREE.Vector3(cX[cX.length-1],yy+0.15,z),0.055));
+  });
+  // Joint rings at key intersections
+  cX.forEach(x=>[zB,zM,zF].forEach(z=>bmG.add(mkRing(new THREE.Vector3(x,f2Y,z),colR))));
+  B.add(bmG);
+
+  // ── DIAGONAL BRACES (穿斗斜撑) ──
+  const brG=new THREE.Group(); brG.userData={hs:'brace'};
+  // Column-to-column braces within each transverse frame
+  cX.forEach(x=>{
+    // Z-direction: front col top → middle col near-top, middle → back
+    brG.add(mkBeam(new THREE.Vector3(x,f2Y,zF),new THREE.Vector3(x,roofY-0.15,zM),0.038,matBrace));
+    brG.add(mkBeam(new THREE.Vector3(x,f2Y,zM),new THREE.Vector3(x,roofY-0.15,zB),0.038,matBrace));
+    // Upper story shorter braces
+    brG.add(mkBeam(new THREE.Vector3(x,midY,zF),new THREE.Vector3(x,roofY-0.15,zM),0.03,matBrace));
+    brG.add(mkBeam(new THREE.Vector3(x,midY,zM),new THREE.Vector3(x,roofY-0.15,zB),0.03,matBrace));
+  });
+  // End wall X-braces (within single bays, not full depth)
+  [-1,1].forEach(s=>{
+    const x=cX[s===1?0:cX.length-1];
+    // Back bay
+    brG.add(mkBeam(new THREE.Vector3(x,f2Y+0.15,zB+0.3),new THREE.Vector3(x,roofY-0.15,zM-0.3),0.032,matBrace));
+    brG.add(mkBeam(new THREE.Vector3(x,roofY-0.15,zB+0.3),new THREE.Vector3(x,f2Y+0.15,zM-0.3),0.032,matBrace));
+    // Front bay
+    brG.add(mkBeam(new THREE.Vector3(x,f2Y+0.15,zM+0.3),new THREE.Vector3(x,roofY-0.15,zF-0.3),0.032,matBrace));
+    brG.add(mkBeam(new THREE.Vector3(x,roofY-0.15,zM+0.3),new THREE.Vector3(x,f2Y+0.15,zF-0.3),0.032,matBrace));
+  });
+  // Stilt diagonals: front column → corridor column
+  for(let i=0;i<cX.length;i+=2){
+    brG.add(mkBeam(new THREE.Vector3(cX[i],f2Y-0.3,zF),new THREE.Vector3(cX[i],f2Y-1.5,zC),0.038,matBrace));
+  }
+  B.add(brG);
+
+  // ── GUA ZHU (瓜柱) ──
+  const gzG=new THREE.Group(); gzG.userData={hs:'guazhu'};
+  // 瓜柱 placed directly under intermediate purlins, heights reach from midY to purlin
+  const guaSlots=[
+    {z:zB+0.5, topY:ridgeY-(ridgeY-roofY)*0.75},  // back i=3 purlin
+    {z:zB+1.0, topY:ridgeY-(ridgeY-roofY)*0.50},  // back i=2 purlin
+    {z:zF-1.0, topY:ridgeY-(ridgeY-roofY)*0.50},  // front i=2 purlin
+    {z:zF-0.5, topY:ridgeY-(ridgeY-roofY)*0.75}   // front i=3 purlin
+  ];
+  cX.forEach((x,i)=>{
+    if(i%2===0){
+      guaSlots.forEach(p=>{
+        const gh=p.topY-midY;
+        if(gh<0.3)return;
+        const g=new THREE.Mesh(new THREE.CylinderGeometry(0.055,0.065,gh,8),matGua);
+        g.position.set(x,midY+gh/2,p.z); g.castShadow=true;
+        gzG.add(g); allMeshes.push(g);
+        const bp=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.035,8),matJoint);
+        bp.position.set(x,midY+0.018,p.z);
+        gzG.add(bp);
+      });
+    }
+  });
+  B.add(gzG);
+
+  // ── PURLINS (檩条) ──
+  const prG=new THREE.Group(); prG.userData={hs:'purlin'};
+  const roofCZ=(zB+zC)/2;
+  // Ridge purlin
+  prG.add(mkBeam(new THREE.Vector3(cX[0]-0.3,ridgeY,roofCZ),new THREE.Vector3(cX[cX.length-1]+0.3,ridgeY,roofCZ),0.06,matGua));
+  // Intermediate purlins
+  for(let i=1;i<=3;i++){
+    const t=i/4, py=ridgeY-(ridgeY-roofY)*t;
+    const pzf=roofCZ+(zF-roofCZ+corrD*0.5)*t;
+    const pzb=roofCZ+(zB-roofCZ-0.5)*t;
+    prG.add(mkBeam(new THREE.Vector3(cX[0]-0.2,py,pzf),new THREE.Vector3(cX[cX.length-1]+0.2,py,pzf),0.04,matGua));
+    prG.add(mkBeam(new THREE.Vector3(cX[0]-0.2,py,pzb),new THREE.Vector3(cX[cX.length-1]+0.2,py,pzb),0.04,matGua));
+  }
+  // Eave purlins
+  const eaveY=roofY-0.15;
+  prG.add(mkBeam(new THREE.Vector3(cX[0]-0.5,eaveY,zC+0.5),new THREE.Vector3(cX[cX.length-1]+0.5,eaveY,zC+0.5),0.045,matGua));
+  prG.add(mkBeam(new THREE.Vector3(cX[0]-0.5,eaveY,zB-0.8),new THREE.Vector3(cX[cX.length-1]+0.5,eaveY,zB-0.8),0.045,matGua));
+  B.add(prG);
+
+  // ── FLOORS ──
+  const flG=new THREE.Group(); flG.userData={hs:'floor'};
+  const f2m=new THREE.Mesh(new THREE.BoxGeometry(totalW+0.3,0.12,depth+corrD+0.1),matFloor);
+  f2m.position.set(0,f2Y-0.06,(zB+zC)/2); f2m.receiveShadow=true; f2m.castShadow=true;
+  flG.add(f2m); allMeshes.push(f2m);
+  const f1m=new THREE.Mesh(new THREE.BoxGeometry(totalW+0.1,0.1,depth*0.35),matFloor);
+  f1m.position.set(0,f1Y,zB+depth*0.175); f1m.receiveShadow=true;
+  flG.add(f1m); allMeshes.push(f1m);
+  B.add(flG);
+
+  // ── WALLS (semi-transparent, right side open for cutaway) ──
+  const wG=new THREE.Group();
+  const wH=f2H-0.12;
+  var bw=new THREE.Mesh(new THREE.BoxGeometry(totalW,wH,0.05),matWall);
+  bw.position.set(0,f2Y+wH/2,zB); wG.add(bw); allMeshes.push(bw);
+  var lw=new THREE.Mesh(new THREE.BoxGeometry(depth,wH,0.05),matWall);
+  lw.position.set(-totalW/2,f2Y+wH/2,(zB+zF)/2); lw.rotation.y=Math.PI/2; wG.add(lw); allMeshes.push(lw);
+  // Door frame
+  const dW=bayW*1.8, dH=wH*0.7;
+  var dL=new THREE.Mesh(new THREE.BoxGeometry(0.08,dH,0.09),matBeam);dL.position.set(-dW/2,f2Y+dH/2,zF);wG.add(dL);allMeshes.push(dL);
+  var dR=new THREE.Mesh(new THREE.BoxGeometry(0.08,dH,0.09),matBeam);dR.position.set(dW/2,f2Y+dH/2,zF);wG.add(dR);allMeshes.push(dR);
+  var dT=new THREE.Mesh(new THREE.BoxGeometry(dW+0.08,0.08,0.09),matBeam);dT.position.set(0,f2Y+dH,zF);wG.add(dT);allMeshes.push(dT);
+  B.add(wG);
+
+  // ── CORRIDOR + 美人靠 ──
+  const coG=new THREE.Group(); coG.userData={hs:'corridor'};
+  const rLen=totalW-bayW*2;
+  var tR=new THREE.Mesh(new THREE.BoxGeometry(rLen,0.04,0.04),matBeam);tR.position.set(0,f2Y+0.85,zC);coG.add(tR);allMeshes.push(tR);
+  var bR=new THREE.Mesh(new THREE.BoxGeometry(rLen,0.035,0.035),matBeam);bR.position.set(0,f2Y+0.15,zC);coG.add(bR);allMeshes.push(bR);
+  for(let i=0;i<=Math.floor(rLen/0.22);i++){
+    const bar=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.012,0.7,5),matBeam);
+    bar.position.set(-rLen/2+i*(rLen/Math.floor(rLen/0.22)),f2Y+0.5,zC);coG.add(bar);allMeshes.push(bar);
+  }
+  [-1,1].forEach(s=>{
+    const mkL=rLen*0.35;
+    var st=new THREE.Mesh(new THREE.BoxGeometry(mkL,0.05,0.28),matCol);st.position.set(s*rLen*0.25,f2Y+0.42,zC-0.16);coG.add(st);allMeshes.push(st);
+    for(let i=0;i<=Math.floor(mkL/0.3);i++){
+      const bk=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.016,0.4,5),matCol);
+      bk.position.set(s*rLen*0.25-mkL/2+i*(mkL/Math.floor(mkL/0.3)),f2Y+0.62,zC-0.3);
+      bk.rotation.x=0.12; coG.add(bk); allMeshes.push(bk);
+    }
+    var bkT=new THREE.Mesh(new THREE.BoxGeometry(mkL,0.03,0.04),matCol);bkT.position.set(s*rLen*0.25,f2Y+0.82,zC-0.32);coG.add(bkT);allMeshes.push(bkT);
+  });
+  B.add(coG);
+
+  // ── ROOF ──
+  const rfG=new THREE.Group(); rfG.userData={hs:'roof'};
+  const rW=totalW+2.0, rD=depth+corrD+2.0, rdgLen=totalW*0.4;
+  function roofSlope(side,segs){
+    const vs=[],us=[],ix=[];
+    const hs=rD/2;
+    for(let iz=0;iz<=segs;iz++){
+      for(let jx=0;jx<=segs;jx++){
+        const u=jx/segs,v=iz/segs;
+        const x=-rW/2+u*rW, lz=v*hs, t=lz/hs;
+        let y=ridgeY-(ridgeY-eaveY)*Math.pow(t,0.85);
+        if(t>0.72){const eT=(t-0.72)/0.28;y+=0.5*Math.pow(eT,2.5)}
+        if(Math.abs(x)>rdgLen/2&&v<0.3){
+          const hT=(Math.abs(x)-rdgLen/2)/((rW-rdgLen)/2);
+          y=ridgeY-(ridgeY-eaveY)*Math.pow(hT,0.8)*0.7;
+        }
+        const cd=Math.sqrt(Math.pow(Math.max(0,Math.abs(x)-rW*0.35)/(rW*0.15),2)+Math.pow(Math.max(0,v-0.7)/0.3,2));
+        if(cd>1)y+=Math.min(0.7,(cd-1)*0.35);
+        vs.push(x,y,roofCZ+side*lz); us.push(u*3,v*3);
+      }
+    }
+    for(let iz=0;iz<segs;iz++)for(let jx=0;jx<segs;jx++){
+      const a=iz*(segs+1)+jx,b=a+1,c=a+(segs+1),d=c+1;
+      if(side>0){ix.push(a,c,b,b,c,d)}else{ix.push(a,b,c,b,d,c)}
+    }
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(vs,3));
+    geo.setAttribute('uv',new THREE.Float32BufferAttribute(us,2));
+    geo.setIndex(ix); geo.computeVertexNormals();
+    return geo;
+  }
+  var fr=new THREE.Mesh(roofSlope(1,16),matRoof);fr.castShadow=true;rfG.add(fr);allMeshes.push(fr);
+  var br=new THREE.Mesh(roofSlope(-1,16),matRoof);br.castShadow=true;rfG.add(br);allMeshes.push(br);
+  // Ridge
+  var rdg=new THREE.Mesh(new THREE.BoxGeometry(rdgLen+0.8,0.15,0.2),matBeam);rdg.position.set(0,ridgeY+0.04,roofCZ);rfG.add(rdg);allMeshes.push(rdg);
+  for(let i=0;i<6;i++){
+    var tl=new THREE.Mesh(new THREE.BoxGeometry(rdgLen/6-0.04,0.1,0.24),matRoof);
+    tl.position.set(-rdgLen/2+(i+0.5)*(rdgLen/6),ridgeY+0.17,roofCZ);rfG.add(tl);allMeshes.push(tl);
+  }
+  [-1,1].forEach(s=>{
+    var on=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.38,0.26),matBeam);on.position.set(s*(rdgLen/2+0.4),ridgeY+0.19,roofCZ);rfG.add(on);allMeshes.push(on);
+    var cu=new THREE.Mesh(new THREE.ConeGeometry(0.09,0.42,6),matBeam);cu.position.set(s*(rdgLen/2+0.4),ridgeY+0.52,roofCZ);cu.rotation.z=s*0.15;rfG.add(cu);allMeshes.push(cu);
+  });
+  // Rafters
+  for(let i=0;i<22;i++){
+    const x=-rW/2+0.4+i*((rW-0.8)/22);
+    [-1,1].forEach(s=>{
+      rfG.add(mkBeam(new THREE.Vector3(x,roofY+0.06,roofCZ+s*0.35),new THREE.Vector3(x,eaveY+0.06,roofCZ+s*(rD/2-0.2)),0.025,matRafter));
+    });
+  }
+  // Fascia
+  [-1,1].forEach(s=>{
+    var fs=new THREE.Mesh(new THREE.BoxGeometry(rW+0.1,0.11,0.05),matBeam);fs.position.set(0,eaveY+0.05,roofCZ+s*rD/2);rfG.add(fs);allMeshes.push(fs);
+  });
+  B.add(rfG);
+
+  // ── JOINT DETAILS (榫卯) ──
+  const jtG=new THREE.Group(); jtG.userData={hs:'joint'};
+  [[cX[0],f2Y,zB],[cX[cX.length-1],f2Y,zB],[cX[0],f2Y,zF],[cX[cX.length-1],f2Y,zF],[cX[2],f2Y,zM],[cX[3],f2Y,zM]].forEach(([x,y,z])=>{
+    var t1=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.05,0.05),matJoint);t1.position.set(x,y,z+colR*0.8);jtG.add(t1);
+    var t2=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.18),matJoint);t2.position.set(x+colR*0.8,y,z);jtG.add(t2);
+  });
+  B.add(jtG);
+
+  // ── STILT AREA ──
+  const stG=new THREE.Group(); stG.userData={hs:'stilt'};
+  for(let i=0;i<cX.length-1;i++){
+    stG.add(mkBeam(new THREE.Vector3(cX[i],yF+0.3,zF),new THREE.Vector3(cX[i+1],f2Y-0.3,zF),0.028,matBrace));
+    stG.add(mkBeam(new THREE.Vector3(cX[i],f2Y-0.3,zF),new THREE.Vector3(cX[i+1],yF+0.3,zF),0.028,matBrace));
+  }
+  B.add(stG);
+
+  return B;
+}
+
+// ============================================================
+//  GROUND
+// ============================================================
+function buildGround(){
+  const g=new THREE.Group();
+  const plane=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({color:0x2a2d34,roughness:0.95}));
+  plane.rotation.x=-Math.PI/2; plane.position.y=-0.01; plane.receiveShadow=true;
+  g.add(plane);
+  g.add(new THREE.GridHelper(30,30,0x333840,0x252830));
+  return g;
+}
+
+// ============================================================
+//  HOTSPOTS
+// ============================================================
+function createHotspots(){
+  [{k:'col',p:[0,2.5,0]},{k:'beam',p:[3,F2Y+0.3,0]},{k:'brace',p:[5,4,3.5]},{k:'guazhu',p:[-4,5,-1]},{k:'purlin',p:[0,6.5,2]},{k:'roof',p:[0,7.5,0]},{k:'stilt',p:[4,1,4]},{k:'joint',p:[-7,F2Y+0.2,3.5]},{k:'corridor',p:[0,F2Y+0.5,5.5]},{k:'floor',p:[0,F2Y+0.5,-2]}].forEach(d=>{
+    const g=new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.RingGeometry(0.18,0.26,14),new THREE.MeshBasicMaterial({color:0xc9a96e,transparent:true,opacity:0.5,side:THREE.DoubleSide})));
+    g.add(new THREE.Mesh(new THREE.CircleGeometry(0.1,10),new THREE.MeshBasicMaterial({color:0xc9a96e,transparent:true,opacity:0.8,side:THREE.DoubleSide})));
+    const hit=new THREE.Mesh(new THREE.SphereGeometry(0.45,6,6),new THREE.MeshBasicMaterial({visible:false}));
+    hit.userData={hs:d.k}; g.add(hit);
+    g.position.set(d.p[0],d.p[1],d.p[2]);
+    g.userData={hs:d.k}; hotspots.push(g); scene.add(g);
+  });
+}
+
+// ============================================================
+//  LIGHTS
+// ============================================================
+function setupLights(){
+  scene.add(new THREE.AmbientLight(0xc0c0cc,0.45));
+  const key=new THREE.DirectionalLight(0xfff0d8,1.2);
+  key.position.set(10,15,8); key.castShadow=true;
+  key.shadow.mapSize.set(2048,2048);
+  key.shadow.camera.near=0.5;key.shadow.camera.far=50;
+  key.shadow.camera.left=-20;key.shadow.camera.right=20;
+  key.shadow.camera.top=20;key.shadow.camera.bottom=-10;
+  key.shadow.bias=-0.001; scene.add(key);
+  const fill=new THREE.DirectionalLight(0x8090b0,0.4);fill.position.set(-8,10,-6);scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xffd8a0,0.3);rim.position.set(-5,8,12);scene.add(rim);
+  scene.add(new THREE.HemisphereLight(0xb0c0d8,0x404838,0.3));
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+function init(){
+  try{
+    var tc=document.createElement('canvas');
+    if(!(tc.getContext('webgl')||tc.getContext('experimental-webgl')))
+      throw new Error('浏览器不支持WebGL，请使用Chrome/Edge/Firefox最新版。');
+    prog(10);
+    scene=new THREE.Scene(); scene.background=new THREE.Color(0x1a1d24);
+    camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,200);
+    camera.position.set(18,10,18);
+    renderer=new THREE.WebGLRenderer({antialias:true});
+    renderer.setSize(innerWidth,innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.15;
+    renderer.outputEncoding=THREE.sRGBEncoding;
+    document.body.appendChild(renderer.domElement);
+    prog(20);
+    controls=new THREE.OrbitControls(camera,renderer.domElement);
+    controls.target.set(0,3.5,0); controls.enableDamping=true; controls.dampingFactor=0.06;
+    controls.autoRotate=true; controls.autoRotateSpeed=0.4; controls.rotateSpeed=0.5;
+    controls.enableZoom=false;
+    prog(30); makeMats(); prog(40); setupLights(); prog(50);
+    scene.add(buildGround()); prog(60);
+    scene.add(buildStructure()); prog(80);
+    createHotspots(); prog(100);
+    addEventListener('resize',onResize);
+    renderer.domElement.addEventListener('click',onTap);
+    renderer.domElement.addEventListener('touchend',onTouch);
+    setTimeout(()=>{document.getElementById('loading').classList.add('hidden');setTimeout(()=>document.getElementById('hint').style.opacity='0',4000)},600);
+    animate();
+  }catch(e){
+    console.error(e);
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('error-overlay').style.display='flex';
+    document.getElementById('error-msg').textContent='初始化失败：'+e.message;
+  }
+}
+
+// ============================================================
+//  INTERACTION
+// ============================================================
+function onTap(e){mouse.x=(e.clientX/innerWidth)*2-1;mouse.y=-(e.clientY/innerHeight)*2+1;hitTest()}
+function onTouch(e){if(e.changedTouches.length){var t=e.changedTouches[0];mouse.x=(t.clientX/innerWidth)*2-1;mouse.y=-(t.clientY/innerHeight)*2+1;hitTest()}}
+function hitTest(){
+  raycaster.setFromCamera(mouse,camera);
+  const arr=[]; hotspots.forEach(h=>h.traverse(c=>{if(c.isMesh)arr.push(c)}));
+  const its=raycaster.intersectObjects(arr);
+  if(its.length){let o=its[0].object;while(o&&!o.userData.hs)o=o.parent;if(o&&o.userData.hs)showInfo(o.userData.hs)}
+}
+function showInfo(k){const d=INFO[k];if(!d)return;document.getElementById('iT').textContent=d.t;document.getElementById('iTag').textContent=d.tag;document.getElementById('iTxt').textContent=d.txt;document.getElementById('info').classList.add('show')}
+function hideInfo(){document.getElementById('info').classList.remove('show')}
+
+// ============================================================
+//  CAMERA
+// ============================================================
+function camTo(v){
+  controls.autoRotate=false;let pos,tgt;
+  switch(v){
+    case'front':pos={x:0,y:4,z:20};tgt={x:0,y:3.5,z:0};break;
+    case'side':pos={x:20,y:4,z:0};tgt={x:0,y:3.5,z:0};break;
+    case'top':pos={x:2,y:22,z:8};tgt={x:0,y:3,z:0};break;
+    case'frame':pos={x:12,y:5,z:12};tgt={x:0,y:3.5,z:0};break;
+    case'detail':pos={x:5,y:3.5,z:8};tgt={x:-2,y:3.5,z:0};break;
+  }
+  animCam(pos,tgt,1200);
+}
+function resetCam(){controls.autoRotate=true;animCam({x:18,y:10,z:18},{x:0,y:3.5,z:0},1200)}
+function animCam(tp,tl,dur){
+  const sp={x:camera.position.x,y:camera.position.y,z:camera.position.z};
+  const st={x:controls.target.x,y:controls.target.y,z:controls.target.z};
+  const t0=Date.now();
+  (function step(){
+    const t=Math.min(1,(Date.now()-t0)/dur);
+    const e=t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+    camera.position.set(sp.x+(tp.x-sp.x)*e,sp.y+(tp.y-sp.y)*e,sp.z+(tp.z-sp.z)*e);
+    controls.target.set(st.x+(tl.x-st.x)*e,st.y+(tl.y-st.y)*e,st.z+(tl.z-st.z)*e);
+    if(t<1)requestAnimationFrame(step);
+  })();
+}
+
+// ============================================================
+//  ZOOM CONTROLS
+// ============================================================
+function updateZoomBar(){
+  if(!controls||!camera)return;
+  var dist=camera.position.distanceTo(controls.target);
+  var minD=controls.minDistance,maxD=controls.maxDistance;
+  var pct=Math.max(0,Math.min(100,((maxD-dist)/(maxD-minD))*100));
+  var fill=document.getElementById('zoom-fill');
+  if(fill)fill.style.width=pct+'%';
+}
+function zoomStep(dir){
+  if(!controls||!camera)return;
+  controls.autoRotate=false;
+  var offset=new THREE.Vector3().subVectors(camera.position,controls.target);
+  var dist=offset.length();
+  var factor=dir>0?0.88:1.14;
+  var newDist=Math.max(controls.minDistance,Math.min(controls.maxDistance,dist*factor));
+  offset.normalize().multiplyScalar(newDist);
+  camera.position.copy(controls.target).add(offset);
+  updateZoomBar();
+}
+function fitView(){
+  controls.autoRotate=false;
+  animCam({x:18,y:10,z:18},{x:0,y:3.5,z:0},800);
+  setTimeout(updateZoomBar,850);
+}
+addEventListener('keydown',function(e){
+  if(e.key==='='||e.key==='+')zoomStep(1);
+  else if(e.key==='-'||e.key==='_')zoomStep(-1);
+  else if(e.key==='0')fitView();
+});
+
+// ============================================================
+//  TOGGLES
+// ============================================================
+function toggleWire(){wireOn=!wireOn;document.getElementById('bWire').classList.toggle('on',wireOn);allMeshes.forEach(m=>{if(m.material&&m.material.wireframe!==undefined)m.material.wireframe=wireOn})}
+function toggleLabels(){labelsOn=!labelsOn;document.getElementById('bLabel').classList.toggle('on',!labelsOn);hotspots.forEach(h=>h.visible=labelsOn)}
+
+// ============================================================
+//  LOOP
+// ============================================================
+function animate(){
+  requestAnimationFrame(animate);aTime+=0.016;controls.update();updateZoomBar();
+  hotspots.forEach(h=>{h.lookAt(camera.position);h.scale.setScalar(0.85+Math.sin(aTime*3)*0.15)});
+  renderer.render(scene,camera);
+}
+function onResize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+
+// ============================================================
+//  BOOT
+// ============================================================
+addEventListener('DOMContentLoaded',function(){
+  if(typeof THREE!=='undefined')init();
+  else setTimeout(function(){if(typeof THREE!=='undefined')init()},3000);
+});
+
+} // end THREE check
+</script>
+</body>
+</html>
