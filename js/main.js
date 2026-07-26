@@ -236,4 +236,176 @@
     });
   });
 
+  // ── INTERVIEW ACCORDION ──
+  var chapters = document.querySelectorAll('.chapter');
+  chapters.forEach(function(ch) {
+    var header = ch.querySelector('.chapter-header');
+    if (!header) return;
+    header.addEventListener('click', function() {
+      var isActive = ch.classList.contains('active');
+      // Close all chapters
+      chapters.forEach(function(c) {
+        c.classList.remove('active');
+        var body = c.querySelector('.chapter-body');
+        if (body) body.style.maxHeight = '0px';
+        var hdr = c.querySelector('.chapter-header');
+        if (hdr) hdr.setAttribute('aria-expanded', 'false');
+      });
+      // Open clicked chapter if it wasn't active
+      if (!isActive) {
+        ch.classList.add('active');
+        var body = ch.querySelector('.chapter-body');
+        if (body) {
+          body.style.maxHeight = body.scrollHeight + 'px';
+        }
+        header.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // ── AUDIO PLAYER ──
+  var audioData = (typeof SITE_DATA !== 'undefined' && SITE_DATA.interview) ? SITE_DATA.interview.audio : null;
+  var playerEl = document.getElementById('audioPlayer');
+  var audioEl = document.getElementById('audioEl');
+
+  if (playerEl && audioEl && audioData && audioData.tracks && audioData.tracks.length) {
+    var tracks = audioData.tracks;
+    var currentTrack = 0;
+    var isPlaying = false;
+
+    var btnPlay = playerEl.querySelector('.btn-play');
+    var btnPrev = playerEl.querySelector('.btn-prev');
+    var btnNext = playerEl.querySelector('.btn-next');
+    var btnPlaylist = playerEl.querySelector('.btn-playlist');
+    var progressBar = playerEl.querySelector('.progress-bar');
+    var timeCurrent = playerEl.querySelector('.time-current');
+    var timeTotal = playerEl.querySelector('.time-total');
+    var nowPlayingTrack = playerEl.querySelector('.now-playing-track');
+    var playlistContainer = playerEl.querySelector('.player-playlist');
+
+    // Format time helper
+    function fmtTime(sec) {
+      if (isNaN(sec) || !isFinite(sec)) return '0:00';
+      var m = Math.floor(sec / 60);
+      var s = Math.floor(sec % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    // Render playlist
+    function renderPlaylist() {
+      var html = '';
+      tracks.forEach(function(t, i) {
+        var cls = 'playlist-item' + (i === currentTrack ? ' active' : '');
+        html += '<div class="' + cls + '" data-index="' + i + '">'
+          + '<span class="playlist-item-num">' + (i + 1) + '</span>'
+          + '<div class="playlist-item-info">'
+          + '<span class="playlist-item-name">\u300A' + t.name + '\u300B</span>'
+          + '<span class="playlist-item-artist">' + t.artist + '</span>'
+          + '</div>'
+          + '<span class="playlist-item-status">\u5F85\u4E0A\u4F20</span>'
+          + '</div>';
+      });
+      playlistContainer.innerHTML = html;
+
+      // Bind playlist item clicks
+      playlistContainer.querySelectorAll('.playlist-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          var idx = parseInt(item.getAttribute('data-index'), 10);
+          loadTrack(idx);
+          togglePlay();
+        });
+      });
+    }
+
+    // Load track
+    function loadTrack(idx) {
+      if (idx < 0) idx = tracks.length - 1;
+      if (idx >= tracks.length) idx = 0;
+      currentTrack = idx;
+      var t = tracks[currentTrack];
+      audioEl.src = t.src;
+      audioEl.load();
+      nowPlayingTrack.textContent = '\u300A' + t.name + '\u300B \u2014 ' + t.artist;
+      progressBar.value = 0;
+      timeCurrent.textContent = '0:00';
+      timeTotal.textContent = '0:00';
+      renderPlaylist();
+    }
+
+    // Toggle play/pause
+    function togglePlay() {
+      if (!audioEl.src || audioEl.src === window.location.href) {
+        loadTrack(0);
+      }
+      if (audioEl.paused) {
+        audioEl.play().then(function() {
+          isPlaying = true;
+          btnPlay.innerHTML = '&#x23F8;';
+          btnPlay.setAttribute('aria-label', '\u6682\u505C');
+        }).catch(function() {
+          // Audio file not available yet
+          nowPlayingTrack.textContent = '\u97F3\u9891\u6587\u4EF6\u5F85\u4E0A\u4F20';
+        });
+      } else {
+        audioEl.pause();
+        isPlaying = false;
+        btnPlay.innerHTML = '&#x25B6;';
+        btnPlay.setAttribute('aria-label', '\u64AD\u653E');
+      }
+    }
+
+    // Event: timeupdate
+    audioEl.addEventListener('timeupdate', function() {
+      if (audioEl.duration) {
+        progressBar.value = (audioEl.currentTime / audioEl.duration) * 100;
+        timeCurrent.textContent = fmtTime(audioEl.currentTime);
+      }
+    });
+
+    // Event: loadedmetadata
+    audioEl.addEventListener('loadedmetadata', function() {
+      timeTotal.textContent = fmtTime(audioEl.duration);
+    });
+
+    // Event: ended (auto next)
+    audioEl.addEventListener('ended', function() {
+      loadTrack(currentTrack + 1);
+      audioEl.play().catch(function() {});
+    });
+
+    // Event: error
+    audioEl.addEventListener('error', function() {
+      nowPlayingTrack.textContent = '\u97F3\u9891\u6587\u4EF6\u5F85\u4E0A\u4F20';
+      isPlaying = false;
+      btnPlay.innerHTML = '&#x25B6;';
+    });
+
+    // Progress bar seek
+    progressBar.addEventListener('input', function() {
+      if (audioEl.duration) {
+        audioEl.currentTime = (progressBar.value / 100) * audioEl.duration;
+      }
+    });
+
+    // Button bindings
+    btnPlay.addEventListener('click', togglePlay);
+    btnPrev.addEventListener('click', function() {
+      loadTrack(currentTrack - 1);
+      audioEl.play().catch(function() {});
+    });
+    btnNext.addEventListener('click', function() {
+      loadTrack(currentTrack + 1);
+      audioEl.play().catch(function() {});
+    });
+
+    // Playlist toggle
+    btnPlaylist.addEventListener('click', function() {
+      playlistContainer.classList.toggle('open');
+    });
+
+    // Initialize
+    renderPlaylist();
+    loadTrack(0);
+  }
+
 })();

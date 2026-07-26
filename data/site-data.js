@@ -251,5 +251,32 @@ var SITE_DATA = {
     '微电影城托管班',
     '秀山县党群服务中心托管班',
     '何建勋老师花灯传习所'
-  ]
+  ],
+
+  /* ═══════════════════ 传承人专访：何建勋 ═══════════════════ */
+  interview: {
+    profile: {
+      name: '何建勋',
+      titles: ['秀山花灯 · 秀山民歌 国家级非遗传承人', '傩戏第十一代传人'],
+      photo: 'assets/images/interview-he-portrait.jpg',
+      quote: '灯由唐朝起，灯由宋朝兴。仁宗皇帝登龙位，郭母娘娘瞎眼睛。许下红灯三千六百盏，留下两盏到如今。',
+      quoteSrc: '何建勋 · 口传灯谣',
+      highlights: ['八岁学艺', '守艺四十余年', '四万余首民歌', '三百多种调式']
+    },
+    chapters: [
+      { id: 'ch1', title: '灯由唐起', subtitle: '花灯的起源与传说' },
+      { id: 'ch2', title: '指尖匠心', subtitle: '花灯制作工艺与分类' },
+      { id: 'ch3', title: '风雪痴翁', subtitle: '传承困境与坚守故事' },
+      { id: 'ch4', title: '微光星河', subtitle: '数字化传承与未来展望' }
+    ],
+    audio: {
+      title: '花灯民歌选',
+      tracks: [
+        { name: '跳花灯', artist: '何建勋 领唱', src: 'assets/audio/01-tiaohuadeng.mp3' },
+        { name: '黄杨扁担', artist: '民歌对唱', src: 'assets/audio/02-huangyangbiandan.mp3' },
+        { name: '一把菜籽', artist: '何建勋 演唱', src: 'assets/audio/03-yibacaizi.mp3' },
+        { name: '口传灯谣', artist: '何建勋 口述', src: 'assets/audio/04-dengyao.mp3' }
+      ]
+    }
+  }
 };
