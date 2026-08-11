@@ -66,7 +66,7 @@ var SITE_DATA = {
       {
         name: '文化调研组',
         icon: '\u{1F3AD}',
-        desc: '围绕秀山花灯、民歌、龙凤花烛、吊脚楼等非遗项目进行调研和数字化记录',
+        desc: '围绕秀山花灯、秀山民歌、大寨村座子屋、秀山紫砂石壶开展调研和数字化记录',
         members: ['彭思懿', '李鸿彬', '张旭', '刘敏']
       },
       {
@@ -101,7 +101,7 @@ var SITE_DATA = {
     {
       date: '7月16日',
       title: '三线并进攻坚日',
-      desc: '支教组前往微电影城托管班开展服务；文化组前往大寨村开展吊脚楼实地测量，走访西兰卡普非遗工坊；产业组走访玫瑰园国防教育基地、万亩粮油示范基地'
+      desc: '支教组前往微电影城托管班开展服务；文化组前往大寨村开展座子屋实地测量，走访西兰卡普非遗工坊；产业组走访玫瑰园国防教育基地、万亩粮油示范基地'
     },
     {
       date: '7月17日',
@@ -141,25 +141,43 @@ var SITE_DATA = {
       name: '秀山花灯',
       badge: '国家级非遗',
       desc: '秀山花灯是集舞蹈、音乐、扎彩为一体的民间艺术，2006年列入首批国家级非物质文化遗产名录。我们深入采访了国家级非遗传承人何建勋老师——他八岁学艺，守艺四十余年，收集整理四万余首民歌曲调、三百多种传统调式，2025年获评国家级非物质文化遗产代表性传承人。',
-      img: 'assets/images/culture-huadeng.jpg'
+      images: [
+        'assets/images/culture/huadeng-01.webp',
+        'assets/images/culture/huadeng-02.webp',
+        'assets/images/culture/huadeng-09.webp',
+        'assets/images/culture/huadeng-11.webp'
+      ]
     },
     {
       name: '秀山民歌',
       badge: '传统音乐',
       desc: '秀山民歌是土家族、苗族人民世代传唱的音乐形式。何建勋老师作为傩戏第十一代传人，不仅精通花灯表演，更是民歌的活字典。在他的传习所里，团队成员学唱经典曲目，记录珍贵的口传灯谣和民谣曲调。',
-      img: 'assets/images/culture-minge.jpg'
+      image: 'assets/images/culture/minge-interview.webp',
+      videos: [
+        'assets/media/culture/minge-performance-01.mp4',
+        'assets/media/culture/minge-performance-02.mp4'
+      ]
     },
     {
-      name: '吊脚楼建筑群',
+      name: '大寨村座子屋',
       badge: '穿斗式木构',
-      desc: '文化调研组深入清溪场镇大寨村，对3-5栋不同年代、不同结构的典型吊脚楼进行了实地测量与数据采集。运用SolidWorks完成特色构件的三维建模，结合ArcGIS技术制作文化空间交互式地图，建立文化遗产数字档案。',
-      img: 'assets/images/culture-diaojiaolou.jpg'
+      desc: '文化调研组深入清溪场镇大寨村，对5栋以上不同年代、不同结构的典型座子屋进行了实地测量与数据采集。运用SolidWorks完成特色构件的三维建模，结合ArcGIS技术制作文化空间交互式地图，建立文化遗产数字档案。',
+      images: [
+        'assets/images/culture/zuoziwu-05.webp',
+        'assets/images/culture/zuoziwu-03.webp',
+        'assets/images/culture/zuoziwu-01.webp'
+      ]
     },
     {
-      name: '龙凤花烛',
-      badge: '市级非遗',
-      desc: '龙凤花烛是秀山传统婚嫁用品，以精湛的雕刻工艺和吉祥纹样著称。每支蜡烛上雕刻龙凤呈祥图案，是土家族婚礼文化的重要载体。团队成员走访花烛制作工坊，体验蜡烛浇筑与花纹绘制，记录这一濒临失传的手工艺。',
-      img: 'assets/images/culture-huazhu.jpg'
+      name: '秀山紫砂石壶',
+      badge: '地方石文化 · 匠心传承',
+      desc: '文化调研组来到秀山非遗文化体验馆，与秀山紫砂石壶传承人向华清老师交流，了解紫砂石壶的历史渊源、石材特点与制作技艺。秀山紫砂石壶凝结了地方石文化与传统技艺的创新表达，是传播秀山文化的一张独特名片。',
+      images: [
+        'assets/images/culture/zisha-02.webp',
+        'assets/images/culture/zisha-04.webp',
+        'assets/images/culture/zisha-01.webp',
+        'assets/images/culture/zisha-03.webp'
+      ]
     }
   ],
 
@@ -221,12 +239,12 @@ var SITE_DATA = {
     }
   },
 
-  /* ═══════════════════ 图片画廊（占位，待替换） ═══════════════════ */
+  /* ═══════════════════ 图片画廊 ═══════════════════ */
   gallery: [
-    { src: '', alt: '大寨村吊脚楼实地测量', category: 'culture' },
-    { src: '', alt: '何建勋老师访谈', category: 'culture' },
-    { src: '', alt: '花灯制作技艺体验', category: 'culture' },
-    { src: '', alt: '秀山花灯陈列', category: 'culture' },
+    { src: 'assets/images/culture/zuoziwu-03.webp', alt: '大寨村座子屋实地调研', category: 'culture' },
+    { src: 'assets/images/culture/minge-interview.webp', alt: '何建勋老师访谈', category: 'culture' },
+    { src: 'assets/images/culture/huadeng-09.webp', alt: '花灯制作技艺体验', category: 'culture' },
+    { src: 'assets/images/culture/huadeng-02.webp', alt: '秀山花灯陈列', category: 'culture' },
     { src: '', alt: '武陵山电商产业园走访', category: 'industry' },
     { src: '', alt: '海王中药健康产业基地', category: 'industry' },
     { src: '', alt: '粮油示范基地调研', category: 'industry' },
@@ -239,7 +257,7 @@ var SITE_DATA = {
 
   /* ═══════════════════ 走访地点汇总 ═══════════════════ */
   locations: [
-    '清溪场镇大寨村（吊脚楼调研）',
+    '清溪场镇大寨村（座子屋调研）',
     '清溪场镇西兰卡普非遗工坊',
     '秀山县文化馆 / 非遗文化馆 / 博物馆',
     '天后宫 / 乌阳古码头',
@@ -258,7 +276,7 @@ var SITE_DATA = {
     profile: {
       name: '何建勋',
       titles: ['秀山花灯 · 秀山民歌 国家级非遗传承人', '傩戏第十一代传人'],
-      photo: 'assets/images/interview-he-portrait.jpg',
+      photo: 'assets/images/culture/he-jianxun.webp',
       quote: '灯由唐朝起，灯由宋朝兴。仁宗皇帝登龙位，郭母娘娘瞎眼睛。许下红灯三千六百盏，留下两盏到如今。',
       quoteSrc: '何建勋 · 口传灯谣',
       highlights: ['八岁学艺', '守艺四十余年', '四万余首民歌', '三百多种调式']
@@ -270,12 +288,10 @@ var SITE_DATA = {
       { id: 'ch4', title: '微光星河', subtitle: '数字化传承与未来展望' }
     ],
     audio: {
-      title: '花灯民歌选',
+      title: '秀山民歌实录',
       tracks: [
-        { name: '跳花灯', artist: '何建勋 领唱', src: 'assets/audio/01-tiaohuadeng.mp3' },
-        { name: '黄杨扁担', artist: '民歌对唱', src: 'assets/audio/02-huangyangbiandan.mp3' },
-        { name: '一把菜籽', artist: '何建勋 演唱', src: 'assets/audio/03-yibacaizi.mp3' },
-        { name: '口传灯谣', artist: '何建勋 口述', src: 'assets/audio/04-dengyao.mp3' }
+        { name: '开财门', artist: '文化组现场采录', duration: '05:08', src: 'assets/media/culture/kaicaimen.mp3' },
+        { name: '谢主', artist: '文化组现场采录', duration: '04:39', src: 'assets/media/culture/xiezhu.mp3' }
       ]
     }
   }

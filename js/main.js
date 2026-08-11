@@ -236,6 +236,122 @@
     });
   });
 
+  // ── CULTURE MEDIA CAROUSELS ──
+  var carousels = document.querySelectorAll('[data-carousel]');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  carousels.forEach(function(carousel) {
+    var track = carousel.querySelector('.carousel-track');
+    var slides = Array.prototype.slice.call(carousel.querySelectorAll('.carousel-slide'));
+    var prevBtn = carousel.querySelector('.carousel-prev');
+    var nextBtn = carousel.querySelector('.carousel-next');
+    var dotsWrap = carousel.querySelector('.carousel-dots');
+    var status = carousel.querySelector('.carousel-status');
+    var autoplayDelay = parseInt(carousel.getAttribute('data-autoplay'), 10) || 0;
+    var current = 0;
+    var timer = null;
+    var userPaused = reduceMotion || autoplayDelay === 0;
+    var interactionPaused = false;
+    var touchStartX = 0;
+
+    if (!track || slides.length === 0) return;
+    carousel.setAttribute('tabindex', '0');
+
+    var dots = slides.map(function(_, index) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carousel-dot';
+      dot.setAttribute('aria-label', '查看第' + (index + 1) + '项，共' + slides.length + '项');
+      dot.addEventListener('click', function() {
+        goTo(index, true);
+      });
+      dotsWrap.appendChild(dot);
+      return dot;
+    });
+
+    var toggleBtn = null;
+    if (autoplayDelay > 0) {
+      toggleBtn = document.createElement('button');
+      toggleBtn.type = 'button';
+      toggleBtn.className = 'carousel-toggle';
+      toggleBtn.innerHTML = userPaused ? '&#9654;' : '&#10074;&#10074;';
+      toggleBtn.setAttribute('aria-label', userPaused ? '开始自动轮播' : '暂停自动轮播');
+      toggleBtn.addEventListener('click', function() {
+        userPaused = !userPaused;
+        toggleBtn.innerHTML = userPaused ? '&#9654;' : '&#10074;&#10074;';
+        toggleBtn.setAttribute('aria-label', userPaused ? '开始自动轮播' : '暂停自动轮播');
+        schedule();
+      });
+      dotsWrap.appendChild(toggleBtn);
+    }
+
+    function pauseHiddenMedia(activeIndex) {
+      slides.forEach(function(slide, index) {
+        var media = slide.querySelector('video, audio');
+        if (media && index !== activeIndex) media.pause();
+      });
+    }
+
+    function goTo(index, announce) {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = 'translateX(-' + (current * 100) + '%)';
+      slides.forEach(function(slide, slideIndex) {
+        var active = slideIndex === current;
+        slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+        var media = slide.querySelector('video');
+        if (media) media.tabIndex = active ? 0 : -1;
+      });
+      dots.forEach(function(dot, dotIndex) {
+        var active = dotIndex === current;
+        dot.classList.toggle('active', active);
+        dot.setAttribute('aria-current', active ? 'true' : 'false');
+      });
+      pauseHiddenMedia(current);
+      if (status && announce) status.textContent = '已切换到第' + (current + 1) + '项，共' + slides.length + '项';
+      schedule();
+    }
+
+    function schedule() {
+      if (timer) window.clearTimeout(timer);
+      timer = null;
+      if (!userPaused && !interactionPaused && autoplayDelay > 0 && slides.length > 1 && !document.hidden) {
+        timer = window.setTimeout(function() { goTo(current + 1, false); }, autoplayDelay);
+      }
+    }
+
+    prevBtn.addEventListener('click', function() { goTo(current - 1, true); });
+    nextBtn.addEventListener('click', function() { goTo(current + 1, true); });
+    carousel.addEventListener('keydown', function(event) {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(current - 1, true); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); goTo(current + 1, true); }
+    });
+    carousel.addEventListener('mouseenter', function() { interactionPaused = true; schedule(); });
+    carousel.addEventListener('mouseleave', function() { interactionPaused = false; schedule(); });
+    carousel.addEventListener('focusin', function() { interactionPaused = true; schedule(); });
+    carousel.addEventListener('focusout', function(event) {
+      if (!carousel.contains(event.relatedTarget)) { interactionPaused = false; schedule(); }
+    });
+    carousel.addEventListener('touchstart', function(event) {
+      touchStartX = event.changedTouches[0].clientX;
+      interactionPaused = true;
+      schedule();
+    }, { passive: true });
+    carousel.addEventListener('touchend', function(event) {
+      var distance = event.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(distance) > 45) goTo(distance > 0 ? current - 1 : current + 1, true);
+      interactionPaused = false;
+      schedule();
+    }, { passive: true });
+    document.addEventListener('visibilitychange', schedule);
+
+    if (slides.length < 2) {
+      prevBtn.hidden = true;
+      nextBtn.hidden = true;
+      dotsWrap.hidden = true;
+    }
+    goTo(0, false);
+  });
+
   // ── INTERVIEW ACCORDION ──
   var chapters = document.querySelectorAll('.chapter');
   chapters.forEach(function(ch) {
@@ -302,7 +418,7 @@
           + '<span class="playlist-item-name">\u300A' + t.name + '\u300B</span>'
           + '<span class="playlist-item-artist">' + t.artist + '</span>'
           + '</div>'
-          + '<span class="playlist-item-status">\u5F85\u4E0A\u4F20</span>'
+          + '<span class="playlist-item-status">' + (t.duration || '\u53EF\u64AD\u653E') + '</span>'
           + '</div>';
       });
       playlistContainer.innerHTML = html;
@@ -343,8 +459,7 @@
           btnPlay.innerHTML = '&#x23F8;';
           btnPlay.setAttribute('aria-label', '\u6682\u505C');
         }).catch(function() {
-          // Audio file not available yet
-          nowPlayingTrack.textContent = '\u97F3\u9891\u6587\u4EF6\u5F85\u4E0A\u4F20';
+          nowPlayingTrack.textContent = '\u97F3\u9891\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5';
         });
       } else {
         audioEl.pause();
@@ -375,7 +490,7 @@
 
     // Event: error
     audioEl.addEventListener('error', function() {
-      nowPlayingTrack.textContent = '\u97F3\u9891\u6587\u4EF6\u5F85\u4E0A\u4F20';
+      nowPlayingTrack.textContent = '\u97F3\u9891\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5';
       isPlaying = false;
       btnPlay.innerHTML = '&#x25B6;';
     });
