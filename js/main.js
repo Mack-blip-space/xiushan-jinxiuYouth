@@ -253,9 +253,67 @@
     var userPaused = reduceMotion || autoplayDelay === 0;
     var interactionPaused = false;
     var touchStartX = 0;
+    var isInView = !('IntersectionObserver' in window);
 
     if (!track || slides.length === 0) return;
     carousel.setAttribute('tabindex', '0');
+
+    function hydrateSlide(index) {
+      var slide = slides[(index + slides.length) % slides.length];
+      if (!slide) return;
+      var image = slide.querySelector('img[data-src]');
+      if (!image) return;
+      image.classList.add('is-loading');
+      image.addEventListener('load', function() {
+        image.classList.remove('is-loading');
+        image.classList.add('is-loaded');
+      }, { once: true });
+      image.src = image.getAttribute('data-src');
+      image.removeAttribute('data-src');
+      if (image.complete) image.classList.add('is-loaded');
+    }
+
+    slides.forEach(function(slide) {
+      var video = slide.querySelector('video');
+      var source = video ? video.querySelector('source[data-src]') : null;
+      var loadBtn = slide.querySelector('.video-load-btn');
+      if (!video || !source || !loadBtn) return;
+
+      function showVideoState(label, state) {
+        loadBtn.hidden = false;
+        loadBtn.classList.toggle('is-loading', state === 'loading');
+        loadBtn.classList.toggle('is-error', state === 'error');
+        loadBtn.innerHTML = '<span aria-hidden="true">' + (state === 'loading' ? '…' : '▶') + '</span> ' + label;
+      }
+
+      function loadAndPlayVideo() {
+        interactionPaused = true;
+        schedule();
+        if (source.hasAttribute('data-src')) {
+          source.src = source.getAttribute('data-src');
+          source.removeAttribute('data-src');
+          video.load();
+        } else if (video.error) {
+          video.load();
+        }
+        showVideoState('正在加载视频', 'loading');
+        var playRequest = video.play();
+        if (playRequest && typeof playRequest.catch === 'function') {
+          playRequest.catch(function() {
+            showVideoState('点击继续播放', 'ready');
+          });
+        }
+      }
+
+      loadBtn.addEventListener('click', loadAndPlayVideo);
+      video.addEventListener('playing', function() { loadBtn.hidden = true; });
+      video.addEventListener('waiting', function() {
+        if (!video.paused) showVideoState('网络较慢，正在缓冲', 'loading');
+      });
+      video.addEventListener('error', function() {
+        showVideoState('加载失败，点击重试', 'error');
+      });
+    });
 
     var dots = slides.map(function(_, index) {
       var dot = document.createElement('button');
@@ -294,6 +352,10 @@
 
     function goTo(index, announce) {
       current = (index + slides.length) % slides.length;
+      if (isInView) {
+        hydrateSlide(current);
+        hydrateSlide(current + 1);
+      }
       track.style.transform = 'translateX(-' + (current * 100) + '%)';
       slides.forEach(function(slide, slideIndex) {
         var active = slideIndex === current;
@@ -314,7 +376,7 @@
     function schedule() {
       if (timer) window.clearTimeout(timer);
       timer = null;
-      if (!userPaused && !interactionPaused && autoplayDelay > 0 && slides.length > 1 && !document.hidden) {
+      if (isInView && !userPaused && !interactionPaused && autoplayDelay > 0 && slides.length > 1 && !document.hidden) {
         timer = window.setTimeout(function() { goTo(current + 1, false); }, autoplayDelay);
       }
     }
@@ -350,6 +412,22 @@
       dotsWrap.hidden = true;
     }
     goTo(0, false);
+
+    if ('IntersectionObserver' in window) {
+      var carouselObserver = new IntersectionObserver(function(entries) {
+        isInView = entries[0].isIntersecting;
+        if (isInView) {
+          hydrateSlide(current);
+          hydrateSlide(current + 1);
+        }
+        schedule();
+      }, { rootMargin: '260px 0px', threshold: 0.01 });
+      carouselObserver.observe(carousel);
+    } else {
+      hydrateSlide(0);
+      hydrateSlide(1);
+      schedule();
+    }
   });
 
   // ── INTERVIEW ACCORDION ──
@@ -407,6 +485,28 @@
       return m + ':' + (s < 10 ? '0' : '') + s;
     }
 
+    function trackLabel() {
+      var t = tracks[currentTrack];
+      return '\u300A' + t.name + '\u300B \u2014 ' + t.artist;
+    }
+
+    function setPlayerState(state, message) {
+      playerEl.classList.toggle('is-buffering', state === 'buffering');
+      playerEl.classList.toggle('is-error', state === 'error');
+      isPlaying = state === 'playing';
+      if (state === 'playing') {
+        btnPlay.innerHTML = '&#x23F8;';
+        btnPlay.setAttribute('aria-label', '\u6682\u505C');
+      } else if (state === 'buffering') {
+        btnPlay.innerHTML = '&hellip;';
+        btnPlay.setAttribute('aria-label', '\u6B63\u5728\u52A0\u8F7D\u97F3\u9891');
+      } else {
+        btnPlay.innerHTML = '&#x25B6;';
+        btnPlay.setAttribute('aria-label', '\u64AD\u653E');
+      }
+      nowPlayingTrack.textContent = message || trackLabel();
+    }
+
     // Render playlist
     function renderPlaylist() {
       var html = '';
@@ -427,45 +527,62 @@
       playlistContainer.querySelectorAll('.playlist-item').forEach(function(item) {
         item.addEventListener('click', function() {
           var idx = parseInt(item.getAttribute('data-index'), 10);
-          loadTrack(idx);
-          togglePlay();
+          selectTrack(idx);
+          requestPlay();
         });
       });
     }
 
-    // Load track
-    function loadTrack(idx) {
+    // Select without requesting media. Loading starts only after user action.
+    function selectTrack(idx) {
       if (idx < 0) idx = tracks.length - 1;
       if (idx >= tracks.length) idx = 0;
+      var previousSrc = audioEl.getAttribute('src');
       currentTrack = idx;
       var t = tracks[currentTrack];
-      audioEl.src = t.src;
-      audioEl.load();
-      nowPlayingTrack.textContent = '\u300A' + t.name + '\u300B \u2014 ' + t.artist;
+      audioEl.pause();
+      if (previousSrc && previousSrc !== t.src) {
+        audioEl.removeAttribute('src');
+        audioEl.load();
+      }
       progressBar.value = 0;
       timeCurrent.textContent = '0:00';
-      timeTotal.textContent = '0:00';
+      timeTotal.textContent = t.duration || '0:00';
+      setPlayerState('ready', trackLabel());
       renderPlaylist();
+    }
+
+    function ensureTrackSource(forceReload) {
+      var t = tracks[currentTrack];
+      if (forceReload || audioEl.getAttribute('src') !== t.src) {
+        audioEl.pause();
+        audioEl.src = t.src;
+        audioEl.load();
+      }
+    }
+
+    function requestPlay() {
+      ensureTrackSource(Boolean(audioEl.error));
+      setPlayerState('buffering', '\u6B63\u5728\u8FDE\u63A5\u97F3\u9891\uFF1A' + trackLabel());
+      var playRequest = audioEl.play();
+      if (playRequest && typeof playRequest.catch === 'function') {
+        playRequest.catch(function(error) {
+          if (error && error.name === 'AbortError') return;
+          var hint = error && error.name === 'NotAllowedError'
+            ? '\u8BF7\u518D\u6B21\u70B9\u51FB\u64AD\u653E'
+            : '\u52A0\u8F7D\u5931\u8D25\uFF0C\u70B9\u51FB\u64AD\u653E\u952E\u91CD\u8BD5';
+          setPlayerState('error', hint);
+        });
+      }
     }
 
     // Toggle play/pause
     function togglePlay() {
-      if (!audioEl.src || audioEl.src === window.location.href) {
-        loadTrack(0);
-      }
       if (audioEl.paused) {
-        audioEl.play().then(function() {
-          isPlaying = true;
-          btnPlay.innerHTML = '&#x23F8;';
-          btnPlay.setAttribute('aria-label', '\u6682\u505C');
-        }).catch(function() {
-          nowPlayingTrack.textContent = '\u97F3\u9891\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5';
-        });
+        requestPlay();
       } else {
         audioEl.pause();
-        isPlaying = false;
-        btnPlay.innerHTML = '&#x25B6;';
-        btnPlay.setAttribute('aria-label', '\u64AD\u653E');
+        setPlayerState('paused', trackLabel());
       }
     }
 
@@ -482,17 +599,31 @@
       timeTotal.textContent = fmtTime(audioEl.duration);
     });
 
+    audioEl.addEventListener('playing', function() {
+      setPlayerState('playing', trackLabel());
+    });
+
+    audioEl.addEventListener('waiting', function() {
+      if (!audioEl.paused) {
+        setPlayerState('buffering', '\u7F51\u7EDC\u8F83\u6162\uFF0C\u6B63\u5728\u7F13\u51B2\uFF1A' + trackLabel());
+      }
+    });
+
+    audioEl.addEventListener('stalled', function() {
+      if (!audioEl.paused) {
+        setPlayerState('buffering', '\u7F51\u7EDC\u4E2D\u65AD\uFF0C\u6B63\u5728\u5C1D\u8BD5\u7EE7\u7EED\u52A0\u8F7D');
+      }
+    });
+
     // Event: ended (auto next)
     audioEl.addEventListener('ended', function() {
-      loadTrack(currentTrack + 1);
-      audioEl.play().catch(function() {});
+      selectTrack(currentTrack + 1);
+      requestPlay();
     });
 
     // Event: error
     audioEl.addEventListener('error', function() {
-      nowPlayingTrack.textContent = '\u97F3\u9891\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5';
-      isPlaying = false;
-      btnPlay.innerHTML = '&#x25B6;';
+      setPlayerState('error', '\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u7F51\u7EDC\u540E\u91CD\u8BD5');
     });
 
     // Progress bar seek
@@ -505,12 +636,12 @@
     // Button bindings
     btnPlay.addEventListener('click', togglePlay);
     btnPrev.addEventListener('click', function() {
-      loadTrack(currentTrack - 1);
-      audioEl.play().catch(function() {});
+      selectTrack(currentTrack - 1);
+      requestPlay();
     });
     btnNext.addEventListener('click', function() {
-      loadTrack(currentTrack + 1);
-      audioEl.play().catch(function() {});
+      selectTrack(currentTrack + 1);
+      requestPlay();
     });
 
     // Playlist toggle
@@ -520,7 +651,7 @@
 
     // Initialize
     renderPlaylist();
-    loadTrack(0);
+    selectTrack(0);
   }
 
 })();
