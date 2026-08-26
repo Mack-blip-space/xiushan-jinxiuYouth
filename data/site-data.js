@@ -230,11 +230,14 @@ var SITE_DATA = {
     douyin: {
       url: 'https://www.douyin.com/user/MS4wLjABAAAAOwQe6faum4K8Q2v7gs9tkUPmAWEM7ZGnoX7SsbBobYQOk0myyJBRoVQ6DsNQx9cA',
       label: '抖音账号',
+      account: '34143075389',
       desc: '关注"锦秀青年在秀山"抖音账号，查看实践纪录视频'
     },
     wechat: {
-      url: 'https://mp.weixin.qq.com/cgi-bin/home?t=home/index&token=1684998895&lang=zh_CN',
       label: '微信公众号',
+      name: '锦秀青年在秀山',
+      account: 'jinxiu_swu',
+      qr: 'assets/images/media/wechat-qr.webp',
       desc: '阅读"锦秀青年在秀山"公众号推文，了解实践全过程'
     }
   },
@@ -245,14 +248,8 @@ var SITE_DATA = {
     { src: 'assets/images/culture/minge-interview.webp', alt: '何建勋老师访谈', category: 'culture' },
     { src: 'assets/images/culture/huadeng-09.webp', alt: '花灯制作技艺体验', category: 'culture' },
     { src: 'assets/images/culture/huadeng-02.webp', alt: '秀山花灯陈列', category: 'culture' },
-    { src: '', alt: '武陵山电商产业园走访', category: 'industry' },
-    { src: '', alt: '海王中药健康产业基地', category: 'industry' },
-    { src: '', alt: '粮油示范基地调研', category: 'industry' },
-    { src: '', alt: '托管班课堂教学', category: 'teach' },
-    { src: '', alt: '支教课堂互动', category: 'teach' },
-    { src: '', alt: '客寨风雨桥调研', category: 'culture' },
-    { src: '', alt: '非遗文化馆参观', category: 'culture' },
-    { src: '', alt: '团队合影', category: 'team' }
+    { src: 'assets/images/teaching/teach-01.webp', alt: '托管班课堂教学', category: 'teach' },
+    { src: 'assets/images/teaching/teach-02.webp', alt: '支教课堂互动', category: 'teach' }
   ],
 
   /* ═══════════════════ 走访地点汇总 ═══════════════════ */

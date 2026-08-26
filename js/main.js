@@ -236,7 +236,7 @@
     });
   });
 
-  // ── CULTURE MEDIA CAROUSELS ──
+  // ── MEDIA CAROUSELS ──
   var carousels = document.querySelectorAll('[data-carousel]');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -387,12 +387,9 @@
       if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(current - 1, true); }
       if (event.key === 'ArrowRight') { event.preventDefault(); goTo(current + 1, true); }
     });
-    carousel.addEventListener('mouseenter', function() { interactionPaused = true; schedule(); });
-    carousel.addEventListener('mouseleave', function() { interactionPaused = false; schedule(); });
-    carousel.addEventListener('focusin', function() { interactionPaused = true; schedule(); });
-    carousel.addEventListener('focusout', function(event) {
-      if (!carousel.contains(event.relatedTarget)) { interactionPaused = false; schedule(); }
-    });
+    // Keep autoplay running when a mouse cursor happens to rest over the carousel.
+    // Users can pause explicitly with the pause control; touch gestures pause only
+    // for the duration of the gesture below.
     carousel.addEventListener('touchstart', function(event) {
       touchStartX = event.changedTouches[0].clientX;
       interactionPaused = true;
@@ -653,5 +650,95 @@
     renderPlaylist();
     selectTrack(0);
   }
+
+  // ── COPY ACCOUNT IDS ──
+  var copyButtons = document.querySelectorAll('[data-copy]');
+
+  function fallbackCopy(text) {
+    var input = document.createElement('textarea');
+    input.value = text;
+    input.setAttribute('readonly', '');
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    var copied = document.execCommand('copy');
+    document.body.removeChild(input);
+    return copied;
+  }
+
+  copyButtons.forEach(function(button) {
+    var originalLabel = button.textContent;
+    button.addEventListener('click', function() {
+      var value = button.getAttribute('data-copy') || '';
+      var label = button.getAttribute('data-copy-label') || '内容';
+      var operation = navigator.clipboard && window.isSecureContext
+        ? navigator.clipboard.writeText(value)
+        : Promise.resolve(fallbackCopy(value));
+
+      operation.then(function() {
+        button.textContent = label + '已复制';
+        button.classList.add('is-copied');
+        window.setTimeout(function() {
+          button.textContent = originalLabel;
+          button.classList.remove('is-copied');
+        }, 1800);
+      }).catch(function() {
+        button.textContent = '请手动复制：' + value;
+        window.setTimeout(function() { button.textContent = originalLabel; }, 2800);
+      });
+    });
+  });
+
+  // ── WECHAT QR LIGHTBOX ──
+  var qrModal = document.getElementById('qrModal');
+  var qrOpenButtons = document.querySelectorAll('[data-qr-open]');
+  var qrCloseButton = qrModal ? qrModal.querySelector('.qr-modal-close') : null;
+  var lastQrTrigger = null;
+
+  function openQrModal(trigger) {
+    if (!qrModal) return;
+    lastQrTrigger = trigger;
+    qrModal.hidden = false;
+    document.body.classList.add('modal-open');
+    if (qrCloseButton) qrCloseButton.focus();
+  }
+
+  function closeQrModal() {
+    if (!qrModal || qrModal.hidden) return;
+    qrModal.hidden = true;
+    document.body.classList.remove('modal-open');
+    if (lastQrTrigger) lastQrTrigger.focus();
+  }
+
+  qrOpenButtons.forEach(function(button) {
+    button.addEventListener('click', function() { openQrModal(button); });
+  });
+  if (qrCloseButton) qrCloseButton.addEventListener('click', closeQrModal);
+  if (qrModal) {
+    qrModal.addEventListener('click', function(event) {
+      if (event.target === qrModal) closeQrModal();
+    });
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && !qrModal.hidden) closeQrModal();
+    });
+  }
+
+  // ── ON-DEMAND 3D EMBED ──
+  document.querySelectorAll('[data-embed]').forEach(function(embed) {
+    var loadButton = embed.querySelector('[data-embed-load]');
+    var frame = embed.querySelector('iframe[data-src]');
+    if (!loadButton || !frame) return;
+    loadButton.addEventListener('click', function() {
+      loadButton.textContent = '正在加载 3D 模型…';
+      loadButton.disabled = true;
+      frame.addEventListener('load', function() {
+        frame.hidden = false;
+        embed.classList.add('is-loaded');
+      }, { once: true });
+      frame.src = frame.getAttribute('data-src');
+      frame.removeAttribute('data-src');
+    });
+  });
 
 })();
