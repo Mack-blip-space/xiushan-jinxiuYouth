@@ -9,6 +9,7 @@
 - Canvas API 绘制电商数据柱状图
 - Intersection Observer 实现滚动动画
 - Three.js r128 嵌入3D互动模型（吊脚楼、花灯）
+- Coze Chat SDK 接入“锦秀问答”（知识库优先、按需联网、来源展示）
 - 响应式设计（支持手机/平板/桌面）
 
 ## 目录结构
@@ -21,6 +22,7 @@ site/
 │   └── style.css           # 完整样式（含CSS变量主题系统）
 ├── js/
 │   ├── main.js             # 导航/滚动动画/图表/视差/画廊筛选
+│   ├── coze-chat.js        # 按需加载“锦秀问答”Chat SDK
 │   └── counter.js          # 数字计数器动画
 ├── data/
 │   └── site-data.js        # 集中管理所有可编辑内容

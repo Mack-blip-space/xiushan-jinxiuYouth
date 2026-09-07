@@ -27,6 +27,7 @@
 | main.js | `D:\self-improvement\SelfStudy\CountrysideActivities\site\js\main.js` | 239 | 8KB | 导航/滚动动画/图表/视差/画廊筛选 |
 | counter.js | `D:\self-improvement\SelfStudy\CountrysideActivities\site\js\counter.js` | 43 | 1KB | 数字计数器动画（Intersection Observer） |
 | site-data.js | `D:\self-improvement\SelfStudy\CountrysideActivities\site\data\site-data.js` | 255 | 12KB | 集中管理所有可编辑内容（数据参考文件） |
+| project-knowledge.json | `D:\self-improvement\SelfStudy\CountrysideActivities\site\data\project-knowledge.json` | 动态 | 动态 | 网站与未来AI问答共用的事实基线，含证据状态、否定事实和待核验项 |
 
 ### 3D 互动嵌入页面
 
@@ -48,7 +49,7 @@
 
 | 目录 | 绝对路径 | 当前状态 |
 |------|----------|----------|
-| images/ | `D:\self-improvement\SelfStudy\CountrysideActivities\site\assets\images\` | **空目录**，待填充实拍照片 |
+| images/ | `D:\self-improvement\SelfStudy\CountrysideActivities\site\assets\images\` | 已配置网站实拍图片与媒体封面；具体数量以文件目录为准 |
 | models/ | `D:\self-improvement\SelfStudy\CountrysideActivities\site\assets\models\` | 含花灯 STL 模型（515KB）+ Base64 版本 |
 | embed/ | `D:\self-improvement\SelfStudy\CountrysideActivities\site\assets\embed\` | 2个 Three.js 3D 互动页面 |
 
@@ -93,13 +94,13 @@
 ### 区块 3：文化调研（#culture）
 - 4项非遗交替叙事布局（左图右文 / 右图左文）
 - 秀山花灯（国家级非遗）/ 秀山民歌 / 吊脚楼建筑群 / 龙凤花烛
-- 含何建勋老师真实访谈数据（四万余首民歌、三百多种调式）
-- 底部数据：4非遗项目 / 1国家级传承人 / 6走访村落 / 200问卷
+- 含何建勋老师访谈内容；其准确身份为“秀山民歌国家级非物质文化遗产代表性传承人”
+- 底部数据：4个文化调研主题 / 1位国家级代表性传承人专访 / 6个走访村落与场馆 / 88份民众问卷（项目汇总）
 
 ### 区块 4：产业调研（#industry）
-- 4张产业方向卡片：特色农业 / 电商产业 / 中医药产业 / 物流体系
+- 3张产业方向卡片：特色农业 / 电商产业 / 物流体系
 - Canvas 柱状图：秀山电商销售额发展历程（2014-2020）
-- 问卷摘要：200民众问卷 / 100进校园问卷 / 5调研报告
+- 问卷回收记录：88份民众问卷 / 38份学生问卷 / 126份合计（原始数据表待归档复核）
 
 ### 区块 5：支教纪实（#teach）
 - 4类课程卡片：红色文化 / 法治安全 / 地理科学 / 趣味科普
@@ -118,10 +119,10 @@
 
 ### 区块 8：数字创新（#digital）
 - 吊脚楼 3D 互动模型 iframe 嵌入
-- 3张数字成果卡片：Coze 智能体 / ArcGIS 文化地图 / 成果展示网站
+- 3张数字成果卡片：项目知识库（AI问答待接入） / 交互式文化地图（完善中） / 成果展示网站
 
 ### 区块 9：成果总览（#result）
-- 6个成果数字：5调研报告 / 10推文 / 3短片 / 2个3D模型 / 1AI智能体 / 383+照片
+- 6个成果数字：5调研报告 / 10推文 / 3短片 / 2个3D模型 / 1份项目事实库 / 383+照片；除3D模型与事实库外，其余数量仍需依据最终成果目录复核
 - 团队合影 placeholder
 - 致谢文字
 
@@ -228,8 +229,10 @@ python -m http.server 8080
 | 产品调研组\产业调研day2 | 135张 | Day2 全程照片 |
 | 产品调研组\产业调研day2\day2产业部分 | 7张 | Day2 产业精选 |
 | 产品调研组\产业调研day2\day2支教部分 | 36张 | Day2 支教精选 |
-| 秀山三下乡\何建勋老师访谈\照片 | 27张 | 花灯传承人专访照片 |
+| 秀山三下乡\何建勋老师访谈\照片 | 27张 | 何建勋老师访谈照片 |
 | 秀山三下乡\支教组 | 14张 | 支教课堂照片 |
 | 秀山三下乡\文化组\古建筑走访\照片 | 20张 | 吊脚楼/古建筑照片 |
 | 秀山三下乡\文化组\文化组第二天推文\照片 | 8张 | Day2 文化调研照片 |
 | survey_covers | 4张 | 问卷封面图（AI生成） |
+
+> 上表为既有素材盘点快照，不等同于最终成果统计。对外使用数量时，以 `data/project-knowledge.json` 的核验状态为准。

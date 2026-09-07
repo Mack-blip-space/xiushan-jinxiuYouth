@@ -1,0 +1,414 @@
+{
+  "meta": {
+    "schemaVersion": "1.0.0",
+    "title": "锦秀青年在秀山：网站与AI共用事实库",
+    "createdAt": "2026-09-05",
+    "updatedAt": "2026-09-05",
+    "maintainer": "常浩",
+    "language": "zh-CN",
+    "intendedUse": [
+      "网站内容核验",
+      "未来AI问答的检索知识源"
+    ],
+    "currentStage": "事实核验与方案设计",
+    "importantNotice": "本文件是当前网站和未来AI问答的共同事实基线。历史策划、目标数量和拟完成成果不得自动视为实际成果。"
+  },
+  "statusDefinitions": {
+    "verified_user": "由项目成员常浩在当前工作中明确确认",
+    "verified_project_record": "有本地实践记录、访谈原文或实际文件佐证",
+    "verified_official": "有政府或国家级非遗官方来源佐证",
+    "qualified_internal_record": "仅见于内部汇总材料，缺少原始数据或独立佐证，公开使用时必须注明口径",
+    "planned": "处于规划、整理或完善阶段，不得表述为已完成成果",
+    "rejected": "已确认不实、未发生或属于旧计划，不得用于正面回答"
+  },
+  "usageRules": [
+    "网站正文原则上只使用 verified_user、verified_project_record 和 verified_official 状态的事实。",
+    "qualified_internal_record 可用于说明当前项目口径，但必须同时展示限制说明。",
+    "planned 内容必须使用“计划”“拟”“整理中”“完善中”“尚未接入”等措辞。",
+    "rejected 内容不得作为事实输出；若用户直接询问，应明确纠正。",
+    "必须区分团队实地经历、秀山县背景资料、历史统计数据和未来方案。",
+    "AI无法从本库确认的问题，应回答“现有项目资料无法确认”，不得自行补全。",
+    "未经授权，不向公开网站或AI知识库写入联系电话、身份证件、未成年人姓名等个人信息。"
+  ],
+  "sources": [
+    {
+      "id": "user_confirmation_20260905",
+      "type": "user_confirmation",
+      "title": "项目成员常浩于2026年9月5日的事实确认",
+      "locator": "当前项目对话"
+    },
+    {
+      "id": "practice_memory_20260720",
+      "type": "local_record",
+      "title": "三下乡实践阶段记录",
+      "path": ".workbuddy/memory/2026-07-20.md"
+    },
+    {
+      "id": "project_memory",
+      "type": "local_record",
+      "title": "项目长期记录",
+      "path": ".workbuddy/memory/MEMORY.md",
+      "caveat": "其中关于Coze已接入的旧记录已被常浩本次确认推翻，不再采用。"
+    },
+    {
+      "id": "competition_todo",
+      "type": "internal_summary",
+      "title": "新文科创新实践大赛待办与成果汇总",
+      "path": "三下乡创新比赛/待办.docx",
+      "caveat": "包含草稿、计划和待核实数量，不能整体视为已验证事实。"
+    },
+    {
+      "id": "hejianxun_interviews",
+      "type": "primary_interview",
+      "title": "何建勋老师访谈四板块原文",
+      "paths": [
+        "秀山三下乡/何建勋老师访谈/何建勋老师访谈/何建勋老师访谈内容板块一.docx",
+        "秀山三下乡/何建勋老师访谈/何建勋老师访谈/何建勋老师访谈内容板块二.docx",
+        "秀山三下乡/何建勋老师访谈/何建勋老师访谈/何建勋老师访谈内容板块三.docx",
+        "秀山三下乡/何建勋老师访谈/何建勋老师访谈/何建勋老师访谈内容板块四.docx"
+      ]
+    },
+    {
+      "id": "rag_materials",
+      "type": "local_inventory",
+      "title": "既有秀山RAG知识库材料",
+      "path": "技术组/coze智能体/RAG知识库/秀山土家族苗族自治县概况",
+      "caveat": "部分文本形成于实践前，含计划性表述，导入AI前必须按本事实库清洗。"
+    },
+    {
+      "id": "site_artifacts",
+      "type": "local_inventory",
+      "title": "网站与数字成果文件",
+      "paths": [
+        "site/index.html",
+        "site/assets/embed/diaojiaolou.html",
+        "技术组/秀山吊脚楼3D互动体验.html",
+        "技术组/秀山花灯3D互动体验.html",
+        "site/assets/models/xiushan_huadeng.stl"
+      ]
+    },
+    {
+      "id": "official_xiushan_huadeng",
+      "type": "official_web",
+      "title": "中国非物质文化遗产网：秀山花灯",
+      "url": "https://www.ihchina.cn/project_details/22097.html"
+    },
+    {
+      "id": "official_xiushan_minge",
+      "type": "official_web",
+      "title": "中国非物质文化遗产网：秀山民歌",
+      "url": "https://www.ihchina.cn/project_details/12614/"
+    },
+    {
+      "id": "official_he_jianxun",
+      "type": "official_web",
+      "title": "中国非物质文化遗产网：何建勋",
+      "url": "https://www.ihchina.cn/ccr_detail/29945.html"
+    },
+    {
+      "id": "ecommerce_2021_summary",
+      "type": "secondary_summary",
+      "title": "秀山电商学术报告摘要（崔凯，2021）",
+      "path": "技术组/coze智能体/RAG知识库/秀山土家族苗族自治县概况/秀山电商学术报告_摘要.txt",
+      "caveat": "其中数字为历史研究口径，不代表2026年实时数据。"
+    }
+  ],
+  "facts": [
+    {
+      "id": "project_name",
+      "category": "项目基本信息",
+      "questionHints": ["项目叫什么", "团队名称"],
+      "statement": "项目成果网站使用“锦秀青年在秀山”主题，团队为西南大学地理科学学院赴重庆秀山实践团队。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["practice_memory_20260720", "site_artifacts"]
+    },
+    {
+      "id": "practice_time_place",
+      "category": "项目基本信息",
+      "questionHints": ["什么时候实践", "实践地点", "去了几天"],
+      "statement": "团队于2026年7月16日至22日在重庆市秀山土家族苗族自治县开展为期7天的社会实践。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["practice_memory_20260720"]
+    },
+    {
+      "id": "team_size_theme",
+      "category": "项目基本信息",
+      "questionHints": ["团队多少人", "实践主题"],
+      "statement": "团队共13名成员，实践围绕非遗传承与产业振兴展开。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["practice_memory_20260720"]
+    },
+    {
+      "id": "changhao_role",
+      "category": "团队分工",
+      "questionHints": ["常浩负责什么", "网站谁负责"],
+      "statement": "常浩参与产业调研和技术组工作，当前负责网站内容优化以及网站与项目记录的事实对齐。",
+      "status": "verified_user",
+      "public": true,
+      "sourceIds": ["user_confirmation_20260905"]
+    },
+    {
+      "id": "confirmed_group_rosters",
+      "category": "团队分工",
+      "questionHints": ["团队成员名单", "各组成员", "支教组成员", "文化调研组成员", "产业调研组成员"],
+      "statement": "已确认分组为：支教组高思曼、张婷、林若辰；文化调研组彭思懿、李鸿彬、张旭、刘敏；产业调研组杨旺旺、常浩、谢明朗、袁文霞。其他兼职分工如无明确记录，不自行补充。",
+      "status": "verified_user",
+      "public": true,
+      "sourceIds": ["user_confirmation_20260905", "practice_memory_20260720"]
+    },
+    {
+      "id": "industry_actual_visits",
+      "category": "产业调研",
+      "questionHints": ["产业组去了哪里", "实际走访企业"],
+      "statement": "产业调研组实际走访了武陵山国际电商产业园和玫瑰园国防教育基地。",
+      "status": "verified_user",
+      "public": true,
+      "sourceIds": ["user_confirmation_20260905", "practice_memory_20260720"]
+    },
+    {
+      "id": "industry_not_visited",
+      "category": "产业调研",
+      "questionHints": ["去过海王中药基地吗", "去过粮油基地吗"],
+      "statement": "团队没有走访海王中药基地，也没有走访粮油基地；相关地点只曾出现在前期计划中。",
+      "status": "verified_user",
+      "public": true,
+      "sourceIds": ["user_confirmation_20260905", "practice_memory_20260720"]
+    },
+    {
+      "id": "he_interview_event",
+      "category": "非遗访谈",
+      "questionHints": ["何建勋访谈时间", "谁参加了访谈"],
+      "statement": "2026年7月19日，团队全体成员参加了何建勋老师访谈和相关非遗体验活动。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["practice_memory_20260720", "hejianxun_interviews"]
+    },
+    {
+      "id": "he_official_identity",
+      "category": "非遗人物",
+      "questionHints": ["何建勋是谁", "何建勋传承什么项目"],
+      "statement": "何建勋是秀山民歌国家级非物质文化遗产代表性传承人。不得将其表述为“秀山花灯国家级代表性传承人”。",
+      "status": "verified_official",
+      "public": true,
+      "sourceIds": ["official_he_jianxun", "official_xiushan_minge"]
+    },
+    {
+      "id": "he_interview_content",
+      "category": "非遗访谈",
+      "questionHints": ["何老师讲了什么", "花灯怎么制作", "如何传承花灯"],
+      "statement": "何建勋老师在访谈中介绍了花灯起源传说、灯体构件及寓意、选材量尺寸—搭框架—糊纸等制作步骤，并指出剪纸是关键且较难的工序；他也谈到灯班减少、年轻人参与和收益困难，并支持文旅结合、小型便携花灯、短视频、3D建模和交互地图等传播方式。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_nuo_identity",
+      "category": "非遗人物",
+      "questionHints": ["何建勋与傩戏", "傩戏传承"],
+      "statement": "何建勋老师在访谈中自述为何家傩戏第十一代传人。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "xiushan_huadeng_status",
+      "category": "秀山非遗",
+      "questionHints": ["秀山花灯是国家级非遗吗", "花灯哪年入选"],
+      "statement": "秀山花灯于2006年列入第一批国家级非物质文化遗产名录。",
+      "status": "verified_official",
+      "public": true,
+      "sourceIds": ["official_xiushan_huadeng"]
+    },
+    {
+      "id": "xiushan_minge_status",
+      "category": "秀山非遗",
+      "questionHints": ["秀山民歌是国家级非遗吗", "秀山民歌项目编号"],
+      "statement": "秀山民歌是国家级非物质文化遗产代表性项目，项目编号Ⅱ-84，列入第二批国家级非物质文化遗产名录。",
+      "status": "verified_official",
+      "public": true,
+      "sourceIds": ["official_xiushan_minge"]
+    },
+    {
+      "id": "existing_rag_materials",
+      "category": "数字成果",
+      "questionHints": ["知识库整理了吗", "现有AI资料"],
+      "statement": "项目目录中已有11份TXT知识材料和1份配套PDF，内容涉及秀山县情、自然地理、非遗文化、特色农业、电商物流、文旅资源、团队与项目等。部分材料形成于实践前，仍需按事实库清洗。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["rag_materials"]
+    },
+    {
+      "id": "coze_status",
+      "category": "AI问答",
+      "questionHints": ["Coze做好了吗", "智能体上线了吗", "公众号接入AI了吗"],
+      "statement": "此前的Coze智能体没有成功建立，也没有接入微信公众号；目前完成的是知识库材料整理。",
+      "status": "verified_user",
+      "public": true,
+      "sourceIds": ["user_confirmation_20260905"]
+    },
+    {
+      "id": "ai_qa_status",
+      "category": "AI问答",
+      "questionHints": ["网站有AI问答吗", "AI什么时候做", "调用大模型了吗"],
+      "statement": "网站AI智能问答尚未开发或接入，目前只处于需求讨论、事实核验和技术方案设计阶段。",
+      "status": "planned",
+      "public": true,
+      "sourceIds": ["user_confirmation_20260905"]
+    },
+    {
+      "id": "website_status",
+      "category": "数字成果",
+      "questionHints": ["网站是什么技术", "网站部署在哪"],
+      "statement": "当前成果网站是纯前端静态网站，项目记录显示其用于GitHub Pages部署；本事实库的建立不会改变静态部署方式。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["site_artifacts"]
+    },
+    {
+      "id": "interactive_3d_artifacts",
+      "category": "数字成果",
+      "questionHints": ["有几个3D模型", "3D互动成果"],
+      "statement": "项目目录中可核实两项3D互动原型：秀山吊脚楼3D互动体验和秀山花灯3D互动体验；网站中另有花灯STL模型资源。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["site_artifacts"]
+    },
+    {
+      "id": "cultural_map_status",
+      "category": "数字成果",
+      "questionHints": ["ArcGIS地图完成了吗", "交互地图在哪"],
+      "statement": "座子屋点位和文化资料仍在整理，交互式文化地图处于完善阶段，暂不能表述为已完成并嵌入网站。",
+      "status": "planned",
+      "public": true,
+      "sourceIds": ["competition_todo"]
+    },
+    {
+      "id": "survey_counts",
+      "category": "问卷调研",
+      "questionHints": ["问卷多少份", "民众问卷", "学生问卷"],
+      "statement": "当前比赛材料汇总口径为民众问卷88份、学生问卷38份，合计126份。项目目录中尚未发现原始问卷数据表，因此这些数量仍待原始数据复核。",
+      "status": "qualified_internal_record",
+      "public": true,
+      "sourceIds": ["competition_todo"]
+    },
+    {
+      "id": "survey_percentages",
+      "category": "问卷调研",
+      "questionHints": ["问卷结果", "非遗认知率", "体验付费意愿"],
+      "statement": "内部汇总材料记录：94.32%的受访者听说过当地非遗，6.82%表示非常熟悉，2.27%完整学过秀山民歌，4.55%制作过龙凤花烛，77.27%支持非遗进校园，超过80%愿为非遗体验付费。因原始问卷数据表缺失，以上比例仅能作为待复核的内部口径。",
+      "status": "qualified_internal_record",
+      "public": false,
+      "sourceIds": ["competition_todo"]
+    },
+    {
+      "id": "ecommerce_historical_data",
+      "category": "产业背景",
+      "questionHints": ["秀山电商数据", "电商销售额"],
+      "statement": "现有电商材料中的2014—2020年数据来自2021年学术报告摘要，只能作为有明确年份的历史背景，不能回答2026年实时产业数据。",
+      "status": "qualified_internal_record",
+      "public": true,
+      "sourceIds": ["ecommerce_2021_summary"]
+    }
+  ],
+  "rejectedClaims": [
+    {
+      "claim": "团队于2026年7月25日至31日开展实践",
+      "reason": "这是前期计划日期；实际日期为2026年7月16日至22日。",
+      "status": "rejected",
+      "sourceIds": ["practice_memory_20260720", "rag_materials"]
+    },
+    {
+      "claim": "Coze智能体已经建立并接入微信公众号",
+      "reason": "常浩确认此前没有建立成功，目前只有知识库材料。",
+      "status": "rejected",
+      "sourceIds": ["user_confirmation_20260905"]
+    },
+    {
+      "claim": "产业调研组实地走访了海王中药基地",
+      "reason": "常浩确认未走访。",
+      "status": "rejected",
+      "sourceIds": ["user_confirmation_20260905"]
+    },
+    {
+      "claim": "产业调研组实地走访了粮油基地或物流基地",
+      "reason": "粮油行程被取消，现有记录也不足以证明实际走访物流基地。",
+      "status": "rejected",
+      "sourceIds": ["user_confirmation_20260905", "practice_memory_20260720"]
+    },
+    {
+      "claim": "何建勋是秀山花灯国家级非遗代表性传承人",
+      "reason": "官方名录对应的代表性项目是秀山民歌。",
+      "status": "rejected",
+      "sourceIds": ["official_he_jianxun"]
+    },
+    {
+      "claim": "实际回收200份民众问卷和100份学生问卷",
+      "reason": "200和100是前期目标；当前内部汇总为88和38，且原始数据仍待归档复核。",
+      "status": "rejected",
+      "sourceIds": ["competition_todo"]
+    },
+    {
+      "claim": "交互式文化地图已经完成并嵌入网站",
+      "reason": "现有记录显示点位和资料仍在整理，网站中也未发现可核实的成品地图。",
+      "status": "rejected",
+      "sourceIds": ["competition_todo", "site_artifacts"]
+    }
+  ],
+  "pendingVerification": [
+    {
+      "item": "126份问卷的原始数据表、题目文本、去重规则和统计过程",
+      "neededEvidence": "原始XLSX/CSV或问卷平台导出文件"
+    },
+    {
+      "item": "“8个模型”“5栋座子屋”的准确数量与完成状态",
+      "neededEvidence": "模型清单、源文件或测绘记录"
+    },
+    {
+      "item": "15个走访点、5份调研报告、10篇推文、3部短片、383+张照片",
+      "neededEvidence": "最终成果目录、发布链接或可复核文件清单"
+    },
+    {
+      "item": "何建勋老师“八岁学艺、守艺四十余年、收集四万余首民歌、三百多种调式”等具体数字",
+      "neededEvidence": "访谈原始录音中的明确表述或权威公开来源"
+    },
+    {
+      "item": "7天逐日行程的全部地点和活动细节",
+      "neededEvidence": "带日期的工作日志、照片元数据或组内确认"
+    }
+  ],
+  "faq": [
+    {
+      "question": "你们去过海王中药基地吗？",
+      "answer": "没有。海王中药基地只出现在前期计划中，团队实际未走访。",
+      "factIds": ["industry_not_visited"]
+    },
+    {
+      "question": "产业调研组实际去了哪里？",
+      "answer": "可确认的实际走访地点是武陵山国际电商产业园和玫瑰园国防教育基地。",
+      "factIds": ["industry_actual_visits"]
+    },
+    {
+      "question": "Coze智能体已经上线了吗？",
+      "answer": "没有。此前没有成功建立Coze智能体，也没有接入微信公众号；目前已有知识库材料，AI问答仍在讨论和设计。",
+      "factIds": ["coze_status", "ai_qa_status"]
+    },
+    {
+      "question": "何建勋老师是哪一项目的国家级代表性传承人？",
+      "answer": "何建勋老师是秀山民歌国家级非物质文化遗产代表性传承人。",
+      "factIds": ["he_official_identity"]
+    },
+    {
+      "question": "项目目前有多少份问卷？",
+      "answer": "内部汇总材料记录为民众问卷88份、学生问卷38份，共126份；原始数据表尚未归档到项目中，数量仍待复核。",
+      "factIds": ["survey_counts"]
+    },
+    {
+      "question": "文化地图完成了吗？",
+      "answer": "还没有。座子屋点位和文化资料正在整理，交互式文化地图仍处于完善阶段。",
+      "factIds": ["cultural_map_status"]
+    }
+  ]
+}
