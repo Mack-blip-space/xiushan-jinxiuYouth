@@ -1162,7 +1162,7 @@ p { text-wrap: pretty; }
 .ai-launch-btn:hover { transform: translateY(-2px); background: #7f4d28; box-shadow: 0 12px 28px rgba(152, 96, 52, 0.3); }
 .ai-launch-btn:disabled { cursor: wait; opacity: 0.65; transform: none; }
 .ai-launch-btn:focus-visible { outline: 3px solid rgba(152, 96, 52, 0.35); outline-offset: 3px; }
-.ai-chat-mount { display: flex; justify-content: center; margin-top: 10px; }
+.ai-chat-global-mount { position: relative; z-index: 1200; }
 .ai-assistant-status { margin-top: 12px; color: var(--c-text-dim); font-size: 0.72rem; line-height: 1.6; }
 .ai-assistant-status[data-state="ready"] { color: #267852; }
 .ai-assistant-status[data-state="error"] { color: #a33d2f; }
