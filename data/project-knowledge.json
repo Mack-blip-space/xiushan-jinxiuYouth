@@ -38,6 +38,12 @@
       "locator": "当前项目对话"
     },
     {
+      "id": "user_confirmation_20260908",
+      "type": "user_confirmation",
+      "title": "项目成员常浩于2026年9月8日的事实确认（何建勋知识库与Coze接入）",
+      "locator": "当前项目对话"
+    },
+    {
       "id": "practice_memory_20260720",
       "type": "local_record",
       "title": "三下乡实践阶段记录",
@@ -205,6 +211,78 @@
       "sourceIds": ["hejianxun_interviews"]
     },
     {
+      "id": "he_childhood_story",
+      "category": "非遗人物",
+      "questionHints": ["何建勋小时候", "何老师童年", "为什么热爱花灯", "何建勋学艺故事"],
+      "statement": "何建勋老师在访谈中回忆，五六岁时就对花灯极度痴迷，哪怕下大雪、天寒地冻走不动路，也让大人背着跟灯班出去，唱曲、跳舞、敲锣打鼓样样喜欢，发自内心痴迷。两三岁就会敲锣打鼓，正因从小泡在灯班，整套流程烂熟于心。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_return_hometown",
+      "category": "非遗人物",
+      "questionHints": ["何建勋外出打工", "何老师为什么回来", "何建勋坚守"],
+      "statement": "何建勋老师在访谈中提到，年轻时曾随大流外出务工一年半，最后还是回来了，发自内心热爱这门手艺。回乡后带领约二十人的民间班子，徒弟大多是亲戚，靠亲缘维系传承队伍。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_new_workspace",
+      "category": "非遗人物",
+      "questionHints": ["何建勋场地", "何老师工作室", "办公地点被拆"],
+      "statement": "何建勋老师在访谈中提到原办公场地被拆除后，自费新建了传习场地。他坦言确实有经济影响，但真心热爱花灯，不管付出多少成本都心甘情愿坚持，纯粹出于爱好，有人买就卖，没人买也无所谓。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_female_students",
+      "category": "非遗人物",
+      "questionHints": ["何建勋收女徒弟", "花灯传男不传女", "何老师打破陈规"],
+      "statement": "何建勋老师在访谈中介绍，过去民间花灯只传男不传女，认为女性登台不吉利，幺妹子角色由男子反串。现在他打破这一旧规，收了不少女徒弟，很愿意教她们唱跳表演。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_book_publication",
+      "category": "非遗人物",
+      "questionHints": ["何建勋出书", "何老师著作", "傩戏书籍"],
+      "statement": "何建勋老师虽自述读书少、对电脑不熟练，但花费多年时间整理编撰了傩戏相关书籍，全书几十万字，今年刚刚正式出版，为的是即使后继人手不足，文字也能把技艺留存下来。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_craftsmanship_details",
+      "category": "非遗访谈",
+      "questionHints": ["何建勋工匠精神", "花灯制作细节", "常浩观察"],
+      "statement": "团队成员常浩现场体验花灯制作时记录：何老师量尺寸时反复比对两三回，截木条把切面修到平滑不留毛刺，打胶沿接缝缓缓挤出细匀胶线。常浩总结：真正的工匠精神是把简单的事做到不肯再简单的地步。何老师曾说'花灯的骨架，这里要长一点，那里要短一点，不能有分毫差距'。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews", "practice_memory_20260720"]
+    },
+    {
+      "id": "he_digitalization_support",
+      "category": "非遗访谈",
+      "questionHints": ["何建勋支持数字化", "何老师对3D建模的态度", "团队拍摄花灯"],
+      "statement": "何建勋老师在访谈中明确支持团队用3D建模和交互式地图方式保存非遗，认为即使实体空间有变动文化也能被看见，并欣然同意团队拍摄测量花灯作品。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_message_to_students",
+      "category": "非遗访谈",
+      "questionHints": ["何建勋给大学生的建议", "何老师寄语", "不要走马观花"],
+      "statement": "何建勋老师在访谈最后寄语大学生：'很高兴你们对非遗的喜欢，让更多人知道非遗是一件好事，但是我希望你们大学生来交流采访不要走马观花，要做到实处。'",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
       "id": "he_nuo_identity",
       "category": "非遗人物",
       "questionHints": ["何建勋与傩戏", "傩戏传承"],
@@ -235,7 +313,7 @@
       "id": "existing_rag_materials",
       "category": "数字成果",
       "questionHints": ["知识库整理了吗", "现有AI资料"],
-      "statement": "项目目录中已有11份TXT知识材料和1份配套PDF，内容涉及秀山县情、自然地理、非遗文化、特色农业、电商物流、文旅资源、团队与项目等。部分材料形成于实践前，仍需按事实库清洗。",
+      "statement": "项目目录中已有5份发布版TXT知识材料（项目与团队、非遗与访谈、产业与数字成果、问卷数据说明、何建勋传承专访与人物志），另有RAG知识库目录存有10个文本文件和1份配套PDF，内容涉及秀山县情、自然地理、非遗文化、特色农业、电商物流、文旅资源、团队与项目等。",
       "status": "verified_project_record",
       "public": true,
       "sourceIds": ["rag_materials"]
@@ -244,19 +322,19 @@
       "id": "coze_status",
       "category": "AI问答",
       "questionHints": ["Coze做好了吗", "智能体上线了吗", "公众号接入AI了吗"],
-      "statement": "此前的Coze智能体没有成功建立，也没有接入微信公众号；目前完成的是知识库材料整理。",
-      "status": "verified_user",
+      "statement": "网站已集成 Coze Web Chat SDK（Bot ID: 7649420454331662336），采用按需加载方式，用户点击"打开锦秀问答"后在页面弹窗展示问答界面。知识库材料已完成整理，等待在 Coze 平台后台上传配置。",
+      "status": "verified_web_sdk",
       "public": true,
-      "sourceIds": ["user_confirmation_20260905"]
+      "sourceIds": ["site_artifacts", "user_confirmation_20260908"]
     },
     {
       "id": "ai_qa_status",
       "category": "AI问答",
       "questionHints": ["网站有AI问答吗", "AI什么时候做", "调用大模型了吗"],
-      "statement": "网站AI智能问答尚未开发或接入，目前只处于需求讨论、事实核验和技术方案设计阶段。",
-      "status": "planned",
+      "statement": "网站前端已配置 Coze Web Chat SDK 挂载点（site/js/coze-chat.js），知识库文档已完成准备（含何建勋专访人物志），下一步需在 Coze 平台后台上传知识库并测试问答效果。",
+      "status": "verified_web_sdk",
       "public": true,
-      "sourceIds": ["user_confirmation_20260905"]
+      "sourceIds": ["site_artifacts", "user_confirmation_20260908"]
     },
     {
       "id": "website_status",
