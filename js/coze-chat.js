@@ -4,17 +4,26 @@
 
   var BOT_ID = '7649420454331662336';
   var SDK_URL = 'https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/0.1.0-beta.5/libs/cn/index.js';
-  var launchButton = document.getElementById('aiChatLaunch');
+  var sectionLaunchButton = document.getElementById('aiChatLaunch');
+  var floatingLaunchButton = document.getElementById('aiChatFloatingLaunch');
+  var launchButtons = [sectionLaunchButton, floatingLaunchButton].filter(Boolean);
   var statusText = document.getElementById('aiChatStatus');
   var mountPoint = document.getElementById('aiChatMount');
   var client = null;
   var loading = null;
 
-  if (!launchButton || !statusText) return;
+  if (!launchButtons.length || !statusText || !mountPoint) return;
 
   function setStatus(message, state) {
     statusText.textContent = message;
     statusText.dataset.state = state || '';
+    if (floatingLaunchButton) floatingLaunchButton.dataset.state = state || '';
+  }
+
+  function setButtonsDisabled(disabled) {
+    launchButtons.forEach(function (button) {
+      button.disabled = disabled;
+    });
   }
 
   function loadSdk() {
@@ -55,8 +64,8 @@
     });
   }
 
-  launchButton.addEventListener('click', function () {
-    launchButton.disabled = true;
+  function openChat() {
+    setButtonsDisabled(true);
     setStatus('正在连接锦秀问答…', 'loading');
 
     loadSdk()
@@ -70,14 +79,18 @@
             if (sdkEntry && sdkEntry.parentElement) sdkEntry.parentElement.click();
           }, 0);
         }
-        launchButton.textContent = '再次打开锦秀问答';
+        if (sectionLaunchButton) sectionLaunchButton.textContent = '再次打开锦秀问答';
         setStatus('已连接。若问答窗口未自动展开，请点击新出现的“锦秀问答”入口。', 'ready');
       })
       .catch(function () {
         setStatus('问答组件暂时无法连接，请检查网络后重试。', 'error');
       })
       .finally(function () {
-        launchButton.disabled = false;
+        setButtonsDisabled(false);
       });
+  }
+
+  launchButtons.forEach(function (button) {
+    button.addEventListener('click', openChat);
   });
 })();
