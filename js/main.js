@@ -724,6 +724,66 @@
     });
   }
 
+  // ── 2D MODEL GALLERY LIGHTBOX ──
+  var modelModal = document.getElementById('modelModal');
+  var modelButtons = Array.prototype.slice.call(document.querySelectorAll('[data-model-view]'));
+  var modelModalImage = document.getElementById('modelModalImage');
+  var modelModalTitle = document.getElementById('modelModalTitle');
+  var modelModalCategory = document.getElementById('modelModalCategory');
+  var modelModalPosition = document.getElementById('modelModalPosition');
+  var modelModalClose = modelModal ? modelModal.querySelector('.model-modal-close') : null;
+  var modelModalPrev = modelModal ? modelModal.querySelector('.model-modal-prev') : null;
+  var modelModalNext = modelModal ? modelModal.querySelector('.model-modal-next') : null;
+  var activeModelIndex = 0;
+  var lastModelTrigger = null;
+
+  function showModelAt(index) {
+    if (!modelButtons.length || !modelModalImage) return;
+    activeModelIndex = (index + modelButtons.length) % modelButtons.length;
+    var button = modelButtons[activeModelIndex];
+    var thumbnail = button.querySelector('img');
+    modelModalImage.src = thumbnail.currentSrc || thumbnail.src;
+    modelModalImage.alt = thumbnail.alt;
+    modelModalTitle.textContent = button.getAttribute('data-model-title') || '';
+    modelModalCategory.textContent = button.getAttribute('data-model-category') || '';
+    modelModalPosition.textContent = '第 ' + (activeModelIndex + 1) + ' 幅，共 ' + modelButtons.length + ' 幅';
+  }
+
+  function openModelModal(button, index) {
+    if (!modelModal) return;
+    lastModelTrigger = button;
+    showModelAt(index);
+    modelModal.hidden = false;
+    document.body.classList.add('modal-open');
+    if (modelModalClose) modelModalClose.focus();
+  }
+
+  function closeModelModal() {
+    if (!modelModal || modelModal.hidden) return;
+    modelModal.hidden = true;
+    document.body.classList.remove('modal-open');
+    if (modelModalImage) modelModalImage.src = '';
+    if (lastModelTrigger) lastModelTrigger.focus();
+  }
+
+  modelButtons.forEach(function(button, index) {
+    button.addEventListener('click', function() { openModelModal(button, index); });
+  });
+  if (modelModalClose) modelModalClose.addEventListener('click', closeModelModal);
+  if (modelModalPrev) modelModalPrev.addEventListener('click', function() { showModelAt(activeModelIndex - 1); });
+  if (modelModalNext) modelModalNext.addEventListener('click', function() { showModelAt(activeModelIndex + 1); });
+  if (modelModal) {
+    modelModal.addEventListener('click', function(event) {
+      if (event.target === modelModal) closeModelModal();
+    });
+    document.addEventListener('keydown', function(event) {
+      if (modelModal.hidden) return;
+      if (event.key === 'Escape') closeModelModal();
+      if (event.key === 'ArrowLeft') showModelAt(activeModelIndex - 1);
+      if (event.key === 'ArrowRight') showModelAt(activeModelIndex + 1);
+    });
+  }
+
   // ── ON-DEMAND 3D EMBED ──
   document.querySelectorAll('[data-embed]').forEach(function(embed) {
     var loadButton = embed.querySelector('[data-embed-load]');

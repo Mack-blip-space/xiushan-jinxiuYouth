@@ -856,6 +856,60 @@
         <span class="result-label">实拍照片</span>
       </div>
     </div>
+    <div class="model-atlas reveal" aria-labelledby="modelAtlasTitle">
+      <div class="model-atlas-intro">
+        <div>
+          <p class="model-atlas-kicker">2D · DIGITAL ARCHIVE</p>
+          <h3 id="modelAtlasTitle">纹样入画，古意新生</h3>
+          <p>从座子屋的窗棂纹样，到花灯的立体骨架，我们以二维图稿记录传统形制，让乡土记忆在清晰的线条与结构中被看见、被留存。</p>
+        </div>
+        <p class="model-atlas-count"><strong>06</strong><span>幅原创模型图</span></p>
+      </div>
+      <div class="model-gallery" aria-label="二维模型图集">
+        <figure class="model-card model-card--feature">
+          <button class="model-view" type="button" data-model-view data-model-category="座子屋元素" data-model-title="圆窗纹样线稿" aria-label="放大查看圆窗纹样线稿">
+            <img src="assets/images/models-2d/zuoziwu-window-round.jpg" alt="座子屋圆窗与两侧格扇的二维线稿" loading="lazy" decoding="async">
+            <span class="model-view-hint" aria-hidden="true">放大查看</span>
+          </button>
+          <figcaption><span>座子屋元素</span><strong>圆窗纹样线稿</strong></figcaption>
+        </figure>
+        <figure class="model-card">
+          <button class="model-view" type="button" data-model-view data-model-category="花灯结构" data-model-title="花灯骨架 · 斜视图" aria-label="放大查看花灯骨架斜视图">
+            <img src="assets/images/models-2d/huadeng-structure-angle.png" alt="秀山花灯骨架与彩色围片斜视模型图" loading="lazy" decoding="async">
+            <span class="model-view-hint" aria-hidden="true">放大查看</span>
+          </button>
+          <figcaption><span>花灯结构</span><strong>花灯骨架 · 斜视图</strong></figcaption>
+        </figure>
+        <figure class="model-card">
+          <button class="model-view" type="button" data-model-view data-model-category="花灯结构" data-model-title="花灯骨架 · 正视图" aria-label="放大查看花灯骨架正视图">
+            <img src="assets/images/models-2d/huadeng-structure-front.png" alt="秀山花灯骨架与彩色围片正视模型图" loading="lazy" decoding="async">
+            <span class="model-view-hint" aria-hidden="true">放大查看</span>
+          </button>
+          <figcaption><span>花灯结构</span><strong>花灯骨架 · 正视图</strong></figcaption>
+        </figure>
+        <figure class="model-card model-card--third">
+          <button class="model-view" type="button" data-model-view data-model-category="装饰构件" data-model-title="虎纹浮雕效果图" aria-label="放大查看虎纹浮雕效果图">
+            <img src="assets/images/models-2d/tiger-relief.jpg" alt="圆形虎纹装饰构件浮雕效果图" loading="lazy" decoding="async">
+            <span class="model-view-hint" aria-hidden="true">放大查看</span>
+          </button>
+          <figcaption><span>装饰构件</span><strong>虎纹浮雕效果图</strong></figcaption>
+        </figure>
+        <figure class="model-card model-card--third">
+          <button class="model-view" type="button" data-model-view data-model-category="座子屋元素" data-model-title="格扇纹样线稿" aria-label="放大查看格扇纹样线稿">
+            <img src="assets/images/models-2d/zuoziwu-window-lattice.jpg" alt="座子屋圆形格扇与两侧装饰板二维线稿" loading="lazy" decoding="async">
+            <span class="model-view-hint" aria-hidden="true">放大查看</span>
+          </button>
+          <figcaption><span>座子屋元素</span><strong>格扇纹样线稿</strong></figcaption>
+        </figure>
+        <figure class="model-card model-card--third">
+          <button class="model-view" type="button" data-model-view data-model-category="座子屋元素" data-model-title="方格纹样线稿" aria-label="放大查看方格纹样线稿">
+            <img src="assets/images/models-2d/zuoziwu-window-square.jpg" alt="座子屋方格窗与中央圆形纹样二维线稿" loading="lazy" decoding="async">
+            <span class="model-view-hint" aria-hidden="true">放大查看</span>
+          </button>
+          <figcaption><span>座子屋元素</span><strong>方格纹样线稿</strong></figcaption>
+        </figure>
+      </div>
+    </div>
     <div class="result-thanks reveal">
       <p>感谢秀山土家族苗族自治县各级单位的大力支持<br>感谢秀山民歌国家级非物质文化遗产代表性传承人何建勋老师的真诚分享<br>感谢共青团秀山县委的全程指导与帮助<br>感谢西南大学地理科学学院的悉心指导</p>
     </div>
@@ -903,6 +957,22 @@
     <img src="assets/images/media/wechat-qr.webp" alt="锦秀青年在秀山微信公众号二维码">
     <p>公众号 ID：jinxiu_swu</p>
     <button class="copy-btn" type="button" data-copy="jinxiu_swu" data-copy-label="公众号 ID">复制公众号 ID</button>
+  </div>
+</div>
+
+<div class="model-modal" id="modelModal" hidden role="dialog" aria-modal="true" aria-labelledby="modelModalTitle" aria-describedby="modelModalPosition">
+  <div class="model-modal-panel">
+    <button class="model-modal-close" type="button" aria-label="关闭二维模型大图">×</button>
+    <div class="model-modal-stage">
+      <button class="model-modal-nav model-modal-prev" type="button" aria-label="查看上一幅模型图">‹</button>
+      <img id="modelModalImage" src="" alt="">
+      <button class="model-modal-nav model-modal-next" type="button" aria-label="查看下一幅模型图">›</button>
+    </div>
+    <div class="model-modal-meta">
+      <p class="model-modal-category" id="modelModalCategory"></p>
+      <h2 id="modelModalTitle"></h2>
+      <p id="modelModalPosition"></p>
+    </div>
   </div>
 </div>
 

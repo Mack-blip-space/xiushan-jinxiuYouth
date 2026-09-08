@@ -3,14 +3,14 @@
     "schemaVersion": "1.0.0",
     "title": "锦秀青年在秀山：网站与AI共用事实库",
     "createdAt": "2026-09-05",
-    "updatedAt": "2026-09-05",
+    "updatedAt": "2026-09-08",
     "maintainer": "常浩",
     "language": "zh-CN",
     "intendedUse": [
       "网站内容核验",
       "未来AI问答的检索知识源"
     ],
-    "currentStage": "事实核验与方案设计",
+    "currentStage": "何建勋人物知识已接入Coze并通过专项测试",
     "importantNotice": "本文件是当前网站和未来AI问答的共同事实基线。历史策划、目标数量和拟完成成果不得自动视为实际成果。"
   },
   "statusDefinitions": {
@@ -73,6 +73,13 @@
         "秀山三下乡/何建勋老师访谈/何建勋老师访谈/何建勋老师访谈内容板块三.docx",
         "秀山三下乡/何建勋老师访谈/何建勋老师访谈/何建勋老师访谈内容板块四.docx"
       ]
+    },
+    {
+      "id": "hejianxun_experience_changhao",
+      "type": "first_person_field_note",
+      "title": "常浩花灯制作现场体验记录",
+      "path": "秀山三下乡/何建勋老师访谈/何建勋老师访谈/花灯体验_常浩.docx",
+      "caveat": "用于说明团队成员的现场观察与个人感受；其中涉及人物生平数字的二次转述，仍须以访谈原始录音或权威来源复核。"
     },
     {
       "id": "rag_materials",
@@ -214,7 +221,7 @@
       "id": "he_childhood_story",
       "category": "非遗人物",
       "questionHints": ["何建勋小时候", "何老师童年", "为什么热爱花灯", "何建勋学艺故事"],
-      "statement": "何建勋老师在访谈中回忆，五六岁时就对花灯极度痴迷，哪怕下大雪、天寒地冻走不动路，也让大人背着跟灯班出去，唱曲、跳舞、敲锣打鼓样样喜欢，发自内心痴迷。两三岁就会敲锣打鼓，正因从小泡在灯班，整套流程烂熟于心。",
+      "statement": "何建勋老师在访谈中回忆，五六岁时就对花灯十分痴迷，哪怕下大雪、天寒地冻走不动路，也让大人背着跟灯班出去；唱曲、跳舞、敲锣打鼓样样喜欢。正因从小生活在灯班环境中，他后来逐渐掌握了花灯表演和制作的完整流程。",
       "status": "verified_project_record",
       "public": true,
       "sourceIds": ["hejianxun_interviews"]
@@ -232,7 +239,7 @@
       "id": "he_new_workspace",
       "category": "非遗人物",
       "questionHints": ["何建勋场地", "何老师工作室", "办公地点被拆"],
-      "statement": "何建勋老师在访谈中提到原办公场地被拆除后，自费新建了传习场地。他坦言确实有经济影响，但真心热爱花灯，不管付出多少成本都心甘情愿坚持，纯粹出于爱好，有人买就卖，没人买也无所谓。",
+      "statement": "何建勋老师在访谈中提到，原办公场地被拆除后，他在家中建起了新的场地，用于制作花灯、排练和教授徒弟。他坦言场地变化确实带来经济影响，但因为真心热爱花灯，仍愿意坚持；有人订购就制作售卖，没有订单也会继续扎灯。",
       "status": "verified_project_record",
       "public": true,
       "sourceIds": ["hejianxun_interviews"]
@@ -250,7 +257,7 @@
       "id": "he_book_publication",
       "category": "非遗人物",
       "questionHints": ["何建勋出书", "何老师著作", "傩戏书籍"],
-      "statement": "何建勋老师虽自述读书少、对电脑不熟练，但花费多年时间整理编撰了傩戏相关书籍，全书几十万字，今年刚刚正式出版，为的是即使后继人手不足，文字也能把技艺留存下来。",
+      "statement": "何建勋老师在2026年7月的访谈中说，自己读书少、对电脑不熟练，但花费多年整理编撰了一部几十万字的傩戏相关书籍，并称该书当年已经正式出版；他希望即使后继人手不足，也能通过文字保存整套技艺。",
       "status": "verified_project_record",
       "public": true,
       "sourceIds": ["hejianxun_interviews"]
@@ -262,7 +269,25 @@
       "statement": "团队成员常浩现场体验花灯制作时记录：何老师量尺寸时反复比对两三回，截木条把切面修到平滑不留毛刺，打胶沿接缝缓缓挤出细匀胶线。常浩总结：真正的工匠精神是把简单的事做到不肯再简单的地步。何老师曾说'花灯的骨架，这里要长一点，那里要短一点，不能有分毫差距'。",
       "status": "verified_project_record",
       "public": true,
-      "sourceIds": ["hejianxun_interviews", "practice_memory_20260720"]
+      "sourceIds": ["hejianxun_experience_changhao"]
+    },
+    {
+      "id": "he_huadeng_oral_legend",
+      "category": "非遗访谈",
+      "questionHints": ["何建勋与花灯的渊源", "灯由唐朝起是真的吗", "花灯起源传说", "公灯母灯"],
+      "statement": "何建勋老师在访谈中讲述了秀山花灯起于唐、兴于宋以及宋仁宗为母祈福的民间传说，并唱述'许下红灯三千六百盏，留下两盏到如今'等口传灯谣。回答时必须明确这是何老师讲述的民间传说和口传材料，不得当作已经由历史文献确认的史实。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
+    },
+    {
+      "id": "he_huadeng_innovation",
+      "category": "非遗访谈",
+      "questionHints": ["何建勋怎么看花灯创新", "花灯文创", "何建勋支持短视频吗", "何建勋支持3D吗"],
+      "statement": "何建勋老师支持把花灯做得小巧精致、方便游客携带，愿意尝试景区合作并鼓励徒弟使用短视频平台传播；他还明确支持团队用3D建模和交互式地图保存秀山非遗，并同意拍摄、测量花灯作品。",
+      "status": "verified_project_record",
+      "public": true,
+      "sourceIds": ["hejianxun_interviews"]
     },
     {
       "id": "he_digitalization_support",
@@ -322,8 +347,8 @@
       "id": "coze_status",
       "category": "AI问答",
       "questionHints": ["Coze做好了吗", "智能体上线了吗", "公众号接入AI了吗"],
-      "statement": "网站已集成 Coze Web Chat SDK（Bot ID: 7649420454331662336），采用按需加载方式，用户点击"打开锦秀问答"后在页面弹窗展示问答界面。知识库材料已完成整理，等待在 Coze 平台后台上传配置。",
-      "status": "verified_web_sdk",
+      "statement": "网站已集成 Coze Web Chat SDK（Bot ID: 7649420454331662336），采用按需加载方式；用户点击“打开锦秀问答”后，会在当前页面弹出问答界面。智能体已发布，何建勋人物专题知识已接入。",
+      "status": "verified_project_record",
       "public": true,
       "sourceIds": ["site_artifacts", "user_confirmation_20260908"]
     },
@@ -331,8 +356,8 @@
       "id": "ai_qa_status",
       "category": "AI问答",
       "questionHints": ["网站有AI问答吗", "AI什么时候做", "调用大模型了吗"],
-      "statement": "网站前端已配置 Coze Web Chat SDK 挂载点（site/js/coze-chat.js），知识库文档已完成准备（含何建勋专访人物志），下一步需在 Coze 平台后台上传知识库并测试问答效果。",
-      "status": "verified_web_sdk",
+      "statement": "网站中的锦秀问答已上线。Coze公开事实库现有5个文档，何建勋传承专访与人物志已接入；人物经历、口传传说边界、身份纠错、存疑数字处理及纯文字来源显示已在编辑器预览和线上Chat SDK中通过测试。",
+      "status": "verified_project_record",
       "public": true,
       "sourceIds": ["site_artifacts", "user_confirmation_20260908"]
     },
