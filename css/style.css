@@ -1238,6 +1238,61 @@ p { text-wrap: pretty; }
 .result-plus { font-size: 1.4rem; color: var(--c-accent); }
 .result-label { display: block; font-size: 0.78rem; color: var(--c-text-dim); margin-top: 4px; }
 .result-photo { margin-bottom: 48px; aspect-ratio: 21/9; border-radius: 16px; }
+.outcome-showcase {
+  margin-bottom: 56px; padding: clamp(24px, 4vw, 48px);
+  background: #fff; border: 1px solid rgba(91, 54, 35, 0.1);
+  box-shadow: 0 18px 46px rgba(91, 54, 35, 0.06);
+}
+.outcome-showcase-head { margin-bottom: 28px; }
+.outcome-showcase-head h3 { margin-bottom: 10px; font-size: clamp(1.55rem, 3vw, 2.3rem); }
+.outcome-showcase-head p:last-child {
+  max-width: 760px; color: #725f55; font-size: 0.9rem; line-height: 1.9;
+}
+.outcome-map-card {
+  display: grid; grid-template-columns: minmax(240px, 0.78fr) minmax(0, 1.22fr);
+  gap: 0; margin-bottom: 18px; border: 1px solid rgba(91, 54, 35, 0.12);
+  background: #f8f5ef;
+}
+.outcome-map-copy { padding: clamp(22px, 3vw, 34px); align-self: center; }
+.outcome-map-copy span {
+  display: block; margin-bottom: 8px; color: #a45d3f; font-size: 0.68rem;
+  font-weight: 700; letter-spacing: 0.16em;
+}
+.outcome-map-copy h4 { margin-bottom: 10px; font-size: clamp(1.2rem, 2.2vw, 1.65rem); }
+.outcome-map-copy p { margin-bottom: 18px; color: #725f55; font-size: 0.88rem; line-height: 1.85; }
+.outcome-link {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px;
+  border: 1px solid rgba(164, 93, 63, 0.35); color: #8a4f38;
+  background: rgba(255,255,255,0.7); font-size: 0.8rem; letter-spacing: 0.06em;
+}
+.outcome-link:hover { color: #5f3526; background: #fff; }
+.outcome-map-preview {
+  position: relative; display: block; min-height: clamp(280px, 35vw, 420px);
+  overflow: hidden; background: #eee7dc; color: #fffaf3;
+}
+.outcome-map-preview > img { width: 100%; height: 100%; object-fit: cover; }
+.outcome-map-badge {
+  position: absolute; right: 18px; bottom: 18px; min-height: 44px; padding: 0 16px;
+  display: inline-flex; align-items: center; background: rgba(35, 29, 25, 0.84);
+  color: #fffaf3; font-size: 0.78rem; letter-spacing: 0.06em;
+}
+.outcome-map-preview:hover img { transform: scale(1.02); }
+.outcome-map-preview img { transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+.outcome-drawing-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
+}
+.outcome-drawing-card {
+  display: grid; gap: 10px; min-height: 44px; padding: 14px;
+  background: #fbf8f2; border: 1px solid rgba(91, 54, 35, 0.11); color: #3a302b;
+}
+.outcome-drawing-card img {
+  width: 100%; aspect-ratio: 4/3; object-fit: contain; background: #fff;
+  border: 1px solid rgba(91, 54, 35, 0.08);
+}
+.outcome-drawing-card span {
+  font-family: var(--font-serif); font-size: 0.95rem; color: #3a302b;
+}
+.outcome-drawing-card:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(91,54,35,0.08); }
 .model-atlas {
   margin-bottom: 56px; padding: clamp(24px, 4vw, 48px);
   background: color-mix(in srgb, var(--result-surface) 93%, #f6e2dc);
@@ -1428,6 +1483,9 @@ body.modal-open .ai-floating-launch { opacity: 0; visibility: hidden; pointer-ev
   .heritage-interview { padding: 32px 24px; }
   .carousel-slide { height: clamp(320px, 62vw, 500px); }
   .ai-assistant-panel { grid-template-columns: 1fr; }
+  .outcome-map-card { grid-template-columns: 1fr; }
+  .outcome-map-preview { min-height: 340px; }
+  .outcome-drawing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .model-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .model-card, .model-card--feature, .model-card--third { grid-column: auto; }
   .model-card--feature { grid-column: span 2; }
@@ -1473,6 +1531,10 @@ body.modal-open .ai-floating-launch { opacity: 0; visibility: hidden; pointer-ev
   }
   .ai-floating-mark { width: 42px; height: 42px; }
   .ai-floating-copy { display: none; }
+  .outcome-showcase { padding: 22px 16px; margin-inline: -4px; }
+  .outcome-map-preview { min-height: 300px; }
+  .outcome-map-badge { right: 12px; bottom: 12px; }
+  .outcome-drawing-grid { grid-template-columns: 1fr; }
   .model-atlas { padding: 22px 16px; margin-inline: -4px; }
   .model-atlas-intro { grid-template-columns: 1fr; gap: 18px; }
   .model-atlas-count { display: flex; align-items: baseline; gap: 10px; text-align: left; }
